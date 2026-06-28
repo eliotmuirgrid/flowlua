@@ -1,7 +1,7 @@
 #include <stdio.h>
-#include <hello.h>
+#include "hello.h"
 
-void hello(void) {
+int hello(void) {
    puts("Hello!");
    return 0;
 }

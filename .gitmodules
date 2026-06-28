@@ -1,6 +1,3 @@
-[submodule "flowlua/flowmake"]
-	path = flowlua/flowmake
-	url = git@github.com:eliotmuirgrid/flowmake.git
 [submodule "flowmake"]
-	path = flowmake
+	path = make
 	url = git@github.com:eliotmuirgrid/flowmake.git

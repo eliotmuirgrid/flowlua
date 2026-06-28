@@ -4,4 +4,4 @@ DIRS=\
 FOO\
 
 
-include ../flowmake/makefile.core
+include ../make/makefile.core
