@@ -1,4 +1,4 @@
-TARGET=flowlua
+TARGET=flowlua.com
 
 DIRS=\
 FOO\
