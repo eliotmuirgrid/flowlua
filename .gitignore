@@ -1,9 +1,19 @@
+# System files
 .DS_Store
 Thumbs.db
 desktop.ini
+
 *~
-.swp
+*.swp
+
 *.o
+*.d
 *.out
 *.log
-*.com
+*.dbg
+*.elf
+
+
+.* 
+!.gitignore
+!.gitmodules
