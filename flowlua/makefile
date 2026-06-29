@@ -4,4 +4,4 @@ DIRS=\
 FOO\
 
 
-include ../make/makefile.core
+include ../make/makefile
