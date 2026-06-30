@@ -1,7 +1,4 @@
-TARGET=flowlua.com
+TARGET=parser.com
 
-DIRS=\
-FOO\
-
-
+DIRS=LUA
 include ../make/makefile
