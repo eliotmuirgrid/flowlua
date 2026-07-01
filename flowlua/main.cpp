@@ -22,6 +22,10 @@ extern "C" {
 }	
 #endif 
 
+#include "BAS/BASarg.h"
+#include "BAS/BASstring.h"
+#include "BAS/BASstream.h"
+
 /*
 ** generic extra include file
 */
@@ -425,6 +429,11 @@ static int pmain (lua_State *l) {
 
 
 int main (int argc, char *argv[]) {
+  BASstring Match;
+  if (BASargFlagPresent("trace", &Match, argc, argv)){
+     BASout << "Tracing: " << Match << newline;
+     return EXIT_SUCCESS;
+  } 
   int status;
   struct Smain s;
   lua_State *l = lua_open();  /* create state */
