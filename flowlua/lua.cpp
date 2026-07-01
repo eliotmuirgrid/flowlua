@@ -12,11 +12,15 @@
 
 #define lua_c
 
-#include "LUA/lua.h"
-
-#include "LUA/lauxlib.h"
-#include "LUA/lualib.h"
-
+#ifdef __cplusplus
+extern "C" {
+#endif
+   #include "LUA/lua.h"
+   #include "LUA/lauxlib.h"
+   #include "LUA/lualib.h"
+#ifdef __cplusplus
+}	
+#endif 
 
 /*
 ** generic extra include file

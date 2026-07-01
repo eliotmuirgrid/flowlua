@@ -8,7 +8,12 @@
 
 #include "MOD/MODpathSet.h"
 
+#include "LOG/LOGlog.h"
+//LOG_MODULE;
+
 void MODpathSet(lua_State* L, const char* ProgramDir){
+//   LOG_FUNC(MODpathSet);
+//   LOG_VAR(ProgramDir);
    char Path[1024];
    //snprintf(Path, sizeof(Path),
    //      "%s/scripts/?.lua;%s/lib/?.lua",
