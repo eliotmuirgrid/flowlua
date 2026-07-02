@@ -2,7 +2,7 @@
 //-------------------------------------------------------
 // Copyright (C) Forever Eliot Muir.  All Rights Reserved
 //
-// BASargParser
+// BASarg
 // 
 // Command line argument parser routines
 //-------------------------------------------------------

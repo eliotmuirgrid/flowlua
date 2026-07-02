@@ -95,6 +95,10 @@ void BASstring::setCapacity(int NewCapacity){
    }
 }
 
+BASstring& BASstring::operator+=(const char Char){
+   return append(&Char,1);
+}
+
 BASstring& BASstring::operator+=(const char* pData){
    return append(pData, strlen(pData));
 }
@@ -140,3 +144,10 @@ unsigned int BASupperPowerOfTwo(unsigned int v){
    v++;
    return v;
 }
+
+
+bool BASisThisAlpha(char Character){
+   return (Character >= 'A' && Character <= 'Z') ||
+          (Character >= 'a' && Character <= 'z');
+}
+

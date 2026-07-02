@@ -12,19 +12,15 @@
 
 #define lua_c
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-   #include "LUA/lua.h"
-   #include "LUA/lauxlib.h"
-   #include "LUA/lualib.h"
-#ifdef __cplusplus
-}	
-#endif 
+#include "MOD/MODlua.h"
 
 #include "BAS/BASarg.h"
 #include "BAS/BASstring.h"
 #include "BAS/BASstream.h"
+#include "BAS/BAStrace.h"
+BAS_TRACE_INIT;
+
+#include "MOD/MODpathSet.h"
 
 /*
 ** generic extra include file
@@ -305,6 +301,7 @@ static void manual_input (void) {
 
 
 static int handle_argv (char *argv[], int *interactive) {
+  BAS_FUNCTION(handle_argv);
   if (argv[1] == NULL) {  /* no more arguments? */
     if (stdin_is_tty()) {
       print_version();
@@ -320,8 +317,9 @@ static int handle_argv (char *argv[], int *interactive) {
       switch (argv[i][1]) {  /* option */
         case '-': {  /* `--' */
           if (argv[i][2] != '\0') {
-            print_usage();
-            return 1;
+            BAS_TRC("Eliot hack for --trace");
+	    i++; 
+            break;
           }
           i++;  /* skip this argument */
           goto endloop;  /* stop handling arguments */
@@ -432,20 +430,21 @@ int main (int argc, char *argv[]) {
   BASstring Match;
   if (BASargFlagPresent("trace", &Match, argc, argv)){
      BASout << "Tracing: " << Match << newline;
-     return EXIT_SUCCESS;
-  } 
+     BAStrace(Match.data());
+  }
   int status;
   struct Smain s;
-  lua_State *l = lua_open();  /* create state */
-  if (l == NULL) {
+  MODpathSet(L);
+  lua_State* L = lua_open();  /* create state */
+  if (L == NULL) {
     l_message(argv[0], "cannot create state: not enough memory");
     return EXIT_FAILURE;
   }
   s.argc = argc;
   s.argv = argv;
-  status = lua_cpcall(l, &pmain, &s);
+  status = lua_cpcall(L, &pmain, &s);
   report(status);
-  lua_close(l);
+  lua_close(L);
   return (status || s.status) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
 

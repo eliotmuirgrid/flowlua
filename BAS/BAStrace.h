@@ -1,5 +1,4 @@
-#ifndef _BAS_TRACE_H_
-#define _BAS_TRACE_H_
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
@@ -23,14 +22,11 @@
 
 #include "BASstream.h"
 #include <stdio.h>
-#include "BASmutex.h"
 #include "BASstring.h"
 #include "BASsinkString.h"
 #include <string.h>
 
-// Call this to activate tracing if you need more control - using
-// BASargParser will make it difficult to trace the BASstring class etc.
-// Since that object uses BASstring and BASavlTree etc.
+// Call this to activate tracing - see BASarg too
 void BAStrace(const char* Pattern);
 void BASsetTraceFile(const char* FileName);
 
@@ -51,7 +47,7 @@ extern BASstream BASlog;
 
 void BAStimeStamp(const char* pModule, BASstream& Stream);
 void BASmilliSeconds();
-extern BASmutex s_LogMutex;
+//extern BASmutex s_LogMutex;
 
 class BASmodule{
 public:
@@ -83,7 +79,6 @@ private:
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
          BASlogStream LogStream;\
          LogStream << X << newline;\
-         BASlocker Lock(s_LogMutex);\
          BAStimeStamp(sModule.ModuleName, BASlog);\
          BASlog << LogStream.m_String;\
       }\
@@ -97,7 +92,6 @@ void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream);
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
          BASlogStream LogStream;\
          LogStream << LABEL; BAShexTrace(SIZE, BUFFER, LogStream); LogStream << newline;\
-         BASlocker Lock(s_LogMutex);\
          BAStimeStamp(sModule.ModuleName, BASlog);\
          BASlog << LogStream.m_String;\
       }\
@@ -132,4 +126,3 @@ private:
 void BASwriteIndent(BASsink* pSink, int Level);
 #endif
 
-#endif

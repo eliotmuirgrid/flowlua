@@ -1,5 +1,4 @@
-#ifndef _BAS_AVL_TREE_H__
-#define _BAS_AVL_TREE_H__
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
@@ -152,4 +151,3 @@ public:
    BASavlIteratorT<KType, VType> cend()   const { BASavlIteratorT<KType, VType> i(m_pRoot); i.end(); return i; }
 };
 
-#endif

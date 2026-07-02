@@ -1,5 +1,4 @@
-#ifndef MOD_PATH_SET
-#define MOD_PATH_SET
+#pragma once
 /*************************
  * Copyright (C) Eliot Muir Forever
  *
@@ -10,5 +9,4 @@
 
 typedef struct lua_State lua_State;
 
-void MODpathSet(lua_State* L, const char* ProgramPath);
-#endif
+void MODpathSet(lua_State* L);

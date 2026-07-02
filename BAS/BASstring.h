@@ -17,6 +17,8 @@ public:
    BASstring(const BASstring& Orig);
    ~BASstring();
 
+   bool empty() const { return m_Size ==0; }
+
    int size() const { return m_Size; }
    void setSize(int NewSize) { m_Size = NewSize; }  // no checking - be careful
 
@@ -28,9 +30,9 @@ public:
 
    BASstring& append(const char* pData, int Size);
    BASstring& append(const char* pData);
+   BASstring& operator+=(const char Char);
    BASstring& operator+=(const char* pData);
    BASstring& operator+=(const BASstring& Orig); 
-
 
    BASstring& operator=(const BASstring& Orig);
    BASstring& operator=(const char* pData);
@@ -41,6 +43,9 @@ public:
    bool operator!=(const BASstring& Rhs) const;
 
    int compare(const BASstring& Lhs) const;
+
+   const char& operator[](int i) const{ return data()[i]; }	   
+   char& operator[](int i)            { return data()[i]; }	   
 private:
    void init() {
       m_Size = 0;
@@ -66,6 +71,7 @@ unsigned int BASupperPowerOfTwo(unsigned int v);
 BASstring operator+(const BASstring& Lhs, const char*     pRhs);
 BASstring operator+(const BASstring& Lhs, const BASstring& Rhs);
 
+bool BASisThisAlpha(char Character);
 
 BASstream& operator<<(BASstream& Stream, const BASstring& String);
 

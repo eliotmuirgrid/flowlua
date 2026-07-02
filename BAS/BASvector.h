@@ -34,6 +34,10 @@ public:
       m_Size++;
       return m_pItems[m_Size];
    }
+   void pop() {
+      --m_Size;
+      m_pItems[m_Size].~VType();
+   }
    void resize(int NewSize) { checkCapacity(NewSize+1); m_Size=NewSize; }
    VType& operator[]      (int i)       { BAScheckBoundary(i, m_Size); return m_pItems[i]; }
    const VType& operator[](int i) const { BAScheckBoundary(i, m_Size); return m_pItems[i]; }

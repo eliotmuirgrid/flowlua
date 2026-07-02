@@ -1,12 +1,12 @@
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
-// BASargParser
+// BASarg
 // 
 // Implementation
 //-------------------------------------------------------
 
-#include "BASargParser.h"
+#include "BASarg.h"
 
 #include <string.h>
 

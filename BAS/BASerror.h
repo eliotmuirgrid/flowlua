@@ -1,5 +1,4 @@
-#ifndef _BAS_ERROR_
-#define _BAS_ERROR_
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
@@ -14,4 +13,3 @@ class BASstring;
 // This returns the error code from the operating system translation table.  May be quite incomprehensible :-)
 BASstring BASerrorMessage(int ErrorCode);
 
-#endif

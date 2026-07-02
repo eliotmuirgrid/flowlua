@@ -1,5 +1,4 @@
-#ifndef _BAS_FILE_IMP_H_
-#define _BAS_FILE_IMP_H_
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
@@ -27,4 +26,3 @@
   #define S_IREAD _S_IREAD
 #endif
 
-#endif
