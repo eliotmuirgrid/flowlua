@@ -3,7 +3,7 @@
 To get started.
 
 ```
-mkdir cosmopolitan
+mkdir cosmo
 curl -L -O https://cosmo.zip/pub/cosmocc/cosmocc.zip
 unzip -q cosmocc.zip -d cosmo
 rm    cosmocc.zip
