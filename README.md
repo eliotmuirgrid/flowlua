@@ -1,9 +1,26 @@
 # Flowlua
 
-This is about the most interesting bit of code to watch in my repos.  It
-will be hard to follow because it will divide and divide again and again.
+To get started.
 
-But that is a good thing.  Diversity matters.  And I don't mean the
-fake ESG diversity you get from Sillycon Valley.
+```
+local dir="$HOME/flowtools/cosmopolitan" 
+mkdir -p   $dir
+pushd      $dir
+curl -L -O https://cosmo.zip/pub/cosmocc/cosmocc.zip
+unzip cosmocc.zip 
+rm    cosmocc.zip
+popd 
+```
 
-See [FlowLua](https://github.com/eliotmuirgrid/press/blob/master/flow/lua/i.md)
+
+```
+git clone https://github.com/eliotmuirgrid/flowlua
+```
+
+```
+cd flowlua/flowlua
+```
+
+```
+make
+```
