@@ -23,7 +23,7 @@ git clone https://github.com/eliotmuirgrid/flowlua
 cd flowlua/flowlua
 ```
 
-###  Build the program with make -j16 for faster pararel build.
+###  Build the program with make -j16 for faster parallel build.
 
 ```bash
 make -j16
