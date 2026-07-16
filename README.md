@@ -2,17 +2,11 @@
 
 These instructions are setting up a project called **flowlua**, which is built using the **Cosmopolitan Libc** toolchain.
 
-Here's what each step does:
-
 ### 1. Create a directory for Cosmopolitan
 
 ```bash
 mkdir cosmo
 ```
-
-Creates a directory named `cosmo` that will hold the Cosmopolitan compiler and tools.
-
----
 
 ### 2. Download Cosmopolitan C/C++ compiler
 
@@ -20,62 +14,25 @@ Creates a directory named `cosmo` that will hold the Cosmopolitan compiler and t
 curl -L -O https://cosmo.zip/pub/cosmocc/cosmocc.zip
 ```
 
-* `curl` downloads a file from the internet.
-* `-L` follows HTTP redirects.
-* `-O` saves the file using its original name (`cosmocc.zip`).
+This downloads the cosmocc.zip file with the cosmo compiler in it.
 
-After this, you'll have:
-
-```
-cosmocc.zip
-```
-
----
-
-### 3. Extract it
+### 3. Extract it quietly into the cosmo directory
 
 ```bash
 unzip -q cosmocc.zip -d cosmo
 ```
 
-* `-q` = quiet mode (less output).
-* `-d cosmo` extracts everything into the `cosmo` directory.
-
-Result:
-
-```
-cosmo/
-    bin/
-    include/
-    lib/
-    ...
-```
-
----
-
-### 4. Remove the ZIP file
+### 4. Remove the ZIP file afterwards
 
 ```bash
 rm cosmocc.zip
 ```
 
-The archive is no longer needed after extraction.
-
----
-
-### 5. Clone the FlowLua source
+### 5. Clone the FlowLua source into ~/flowlua
 
 ```bash
 git clone https://github.com/eliotmuirgrid/flowlua
 ```
-
-Downloads the project's source code into a new directory:
-
-```
-flowlua/
-```
-
----
 
 ### 6. Enter the source directory
 
@@ -83,39 +40,18 @@ flowlua/
 cd flowlua/flowlua
 ```
 
-The repository apparently contains another `flowlua` directory inside it. After changing directories, you're in the folder containing the `Makefile` and source code.
+The repository  contains another `flowlua` directory inside it. After changing directories, you're in the folder containing the `Makefile` and source code.
 
-For example:
 
-```
-flowlua/
-    README.md
-    flowlua/
-        makefile
-        *.c
-        *.lua
-        ...
-```
-
----
-
-### 7. Build the program
+### 7. Build the program with make -j16 for faster pararel build.
 
 ```bash
-make
+make -j16
 ```
 
-`make` reads the `makefile` and compiles the project.
-
-The Makefile is configured to use the compiler you unpacked into `$HOME/cosmo/`. If everything is set up correctly, this produces an executable named:
-
-```
-flowlua.com
-```
+The Makefile is configured to use the compiler you unpacked into `$HOME/cosmo/`. If everything is set up correctly, this produces an executable named: flowlua.com/
 
 The `.com` extension comes from Cosmopolitan Libc. It's not a DOS program—it is a "Actually Portable Executable" (APE) that can run on multiple operating systems.
-
----
 
 ### 8. Run it
 
