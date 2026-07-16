@@ -1,6 +1,6 @@
 # Flowlua
 
-These instructions are setting up a project called **flowlua**, which is built using the **Cosmopolitan Libc** toolchain.
+These instructions are setting up a project called [flowlua](https://interfaceware.com/aazip/cosmopolitan/flowlua), which is built using the **Cosmopolitan Libc** toolchain.
 
 ### Create a directory for Cosmopolitan and download it
 
