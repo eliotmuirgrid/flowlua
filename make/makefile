@@ -1,4 +1,4 @@
-TOOL_DIR:=$HOME/flowtools/cosmopolitan/bin/
+TOOL_DIR:=$(HOME)/flowtools/cosmopolitan/bin/
 
 # Wildcard matching to figure out where sources are based on the DIRS variable
 OBJEXT  := .o
