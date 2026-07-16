@@ -40,6 +40,7 @@ It should open up and see
 Lua 5.0.3  Copyright (C) 1994-2006 Tecgraf, PUC-Rio
 > print "Hello"
 Hello
-> ^C
+> 
 
 ```
+Control+C to exit 
