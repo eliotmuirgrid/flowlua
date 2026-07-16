@@ -29,43 +29,17 @@ cd flowlua/flowlua
 make -j16
 ```
 
-### Run it
+### Run it and try printing "Hello"
 
 ```bash
 ./flowlua.com
 ```
+It should open up and see
 
-This starts the FlowLua interpreter.
-
-You'll see a Lua prompt similar to:
-
-```text
->
 ```
-
-or
-
-```text
-Lua 5.x
->
-```
-
----
-
-### 9. Test it
-
-At the prompt, type:
-
-```lua
-print("Hello")
-```
-
-You should see:
-
-```text
+Lua 5.0.3  Copyright (C) 1994-2006 Tecgraf, PUC-Rio
+> print "Hello"
 Hello
+> ^C
+
 ```
-
-which confirms the interpreter is working.
-
-
