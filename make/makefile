@@ -27,8 +27,8 @@ RMLIST  := $(foreach dir, $(DIRS), $(dir)*.o $(dir)*.d) *.d *.o *~ *.elf *.dbg
 
 all: $(TARGET)
 
-CC     := ccache $(TOOL_DIR)cosmocc
-CXX    := ccache $(TOOL_DIR)cosmoc++
+CC     := $(TOOL_DIR)cosmocc
+CXX    := $(TOOL_DIR)cosmoc++
 
 PCFLAGS := -Wno-pointer-to-int-cast -MMD -MP -I../ 
 PCPPFLAGS := -MMD -MP -I../ 
