@@ -22,3 +22,8 @@ cd flowlua/flowlua
 make
 ```
 
+```
+./flowlua.com
+```
+
+Try print "Hello" in the Lua console which opens up.
