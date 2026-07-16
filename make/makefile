@@ -1,3 +1,5 @@
+TOOL_DIR:=$HOME/flowtools/cosmopolitan/bin/
+
 # Wildcard matching to figure out where sources are based on the DIRS variable
 OBJEXT  := .o
 LIBEXT  := a
@@ -25,8 +27,8 @@ RMLIST  := $(foreach dir, $(DIRS), $(dir)*.o $(dir)*.d) *.d *.o *~ *.elf *.dbg
 
 all: $(TARGET)
 
-CC     := ccache $(FLOW_TOOL_COSMOPOLITAN)/bin/cosmocc
-CXX    := ccache $(FLOW_TOOL_COSMOPOLITAN)/bin/cosmoc++
+CC     := ccache $(TOOL_DIR)cosmocc
+CXX    := ccache $(TOOL_DIR)cosmoc++
 
 PCFLAGS := -Wno-pointer-to-int-cast -MMD -MP -I../ 
 PCPPFLAGS := -MMD -MP -I../ 
