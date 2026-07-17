@@ -105,6 +105,7 @@ static void print_usage (void) {
   "usage: %s [options] [script [args]].\n"
   "Available options are:\n"
   "  -        execute stdin as a file\n"
+  "  --memory-test execute a hard-coded Lua chunk from memory\n"
   "  -e stat  execute string `stat'\n"
   "  -i       enter interactive mode after executing `script'\n"
   "  -l name  load and run library `name'\n"
@@ -179,6 +180,12 @@ static int file_input (const char *name) {
 
 static int dostring (const char *s, const char *name) {
   return docall(luaL_loadbuffer(L, s, strlen(s), name));
+}
+
+
+static int memory_test_input (void) {
+  static const char *chunk = "print(\"Hello from memory\")";
+  return docall(luaL_loadbuffer(L, chunk, strlen(chunk), "=@memory-test"));
 }
 
 
@@ -317,6 +324,9 @@ static int handle_argv (char *argv[], int *interactive) {
       switch (argv[i][1]) {  /* option */
         case '-': {  /* `--' */
           if (argv[i][2] != '\0') {
+            if (strcmp(argv[i], "--memory-test") == 0) {
+              return memory_test_input();
+            }
             BAS_TRC("Eliot hack for --trace");
 	    i++; 
             break;
