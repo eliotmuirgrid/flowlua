@@ -111,7 +111,7 @@ static void print_usage (void) {
   "Available options are:\n"
   "  -        execute stdin as a file\n"
   "  --memory-test execute a hard-coded Lua chunk from memory\n"
-  "  --zip-memory-test zip execute hello.lua from <zip> in memory\n"
+  "  --zip-memory-test execute <entry.lua> from <archive.zip> in memory\n"
   "  -e stat  execute string `stat'\n"
   "  -i       enter interactive mode after executing `script'\n"
   "  -l name  load and run library `name'\n"
@@ -195,11 +195,11 @@ static int memory_test_input (void) {
 }
 
 
-static int zip_memory_test_input (const char *zipname) {
-  static const char *entry_name = "hello.lua";
+static int zip_memory_test_input (const char *zipname, const char *entry_name) {
   FILE *f = NULL;
   unsigned char *zipbuf = NULL;
   unsigned char *luabuf = NULL;
+  char *chunk_name = NULL;
   const unsigned char *eocd;
   const unsigned char *zp;
   const unsigned char *zend;
@@ -359,14 +359,25 @@ static int zip_memory_test_input (const char *zipname) {
       goto cleanup;
     }
 
+    {
+      size_t chunk_name_len = strlen(entry_name) + 7;  /* "=@zip:" + entry + NUL */
+      chunk_name = (char *)malloc(chunk_name_len);
+      if (chunk_name == NULL) {
+        l_message(progname, "out of memory for lua chunk name");
+        goto cleanup;
+      }
+      snprintf(chunk_name, chunk_name_len, "=@zip:%s", entry_name);
+    }
+
     status = docall(luaL_loadbuffer(L, (const char *)luabuf, outsize,
-                                    "=@zip:hello.lua"));
+                                    chunk_name));
   }
 
 cleanup:
   if (f != NULL) fclose(f);
   if (zipbuf != NULL) free(zipbuf);
   if (luabuf != NULL) free(luabuf);
+  if (chunk_name != NULL) free(chunk_name);
   return status;
 }
 
@@ -511,11 +522,13 @@ static int handle_argv (char *argv[], int *interactive) {
             }
             if (strcmp(argv[i], "--zip-memory-test") == 0) {
               const char *zipname = argv[++i];
-              if (zipname == NULL) {
-                print_usage();
+              const char *entry_name = argv[++i];
+              if (zipname == NULL || entry_name == NULL) {
+                l_message(progname,
+                          "usage: flowlua.com --zip-memory-test <archive.zip> <entry.lua>");
                 return 1;
               }
-              return zip_memory_test_input(zipname);
+              return zip_memory_test_input(zipname, entry_name);
             }
             BAS_TRC("Eliot hack for --trace");
 	    i++; 
