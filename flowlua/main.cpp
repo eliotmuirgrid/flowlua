@@ -413,6 +413,69 @@ cleanup:
 }
 
 
+static int find_zip_entry_or_report (const unsigned char *zipbuf,
+                                     size_t zipsize,
+                                     const unsigned char *eocd,
+                                     const char *entry_name,
+                                     const unsigned char **out_cfile) {
+  int entry_result;
+  if (out_cfile == NULL) return 1;
+  *out_cfile = NULL;
+
+  entry_result = find_zip_entry(zipbuf, zipsize, eocd, entry_name, out_cfile);
+  if (entry_result == 0) return 0;
+  if (entry_result == 1) return 1;
+
+  {
+    char message[512];
+    snprintf(message, sizeof(message), "entry %s not found in zip", entry_name);
+    l_message(progname, message);
+  }
+  return 1;
+}
+
+
+static int load_zip_entry_into_memory (const char *zipname,
+                                       const char *entry_name,
+                                       unsigned char **out_luabuf,
+                                       size_t *out_luasize) {
+  unsigned char *zipbuf = NULL;
+  unsigned char *luabuf = NULL;
+  const unsigned char *eocd;
+  const unsigned char *cfile;
+  size_t zipsize = 0;
+  size_t luasize = 0;
+  int status = 1;
+
+  *out_luabuf = NULL;
+  *out_luasize = 0;
+
+  if (read_file_into_memory(zipname, &zipbuf, &zipsize) != 0) {
+    goto cleanup;
+  }
+  if (find_zip_eocd(zipbuf, zipsize, &eocd) != 0) {
+    l_message(progname, "invalid zip: cannot find EOCD");
+    goto cleanup;
+  }
+  if (find_zip_entry_or_report(zipbuf, zipsize, eocd, entry_name, &cfile) != 0) {
+    goto cleanup;
+  }
+  if (extract_zip_entry(zipbuf, zipsize, cfile, &luabuf, &luasize) != 0) {
+    goto cleanup;
+  }
+
+  *out_luabuf = luabuf;
+  *out_luasize = luasize;
+  luabuf = NULL;
+  status = 0;
+
+cleanup:
+  if (zipbuf != NULL) free(zipbuf);
+  if (luabuf != NULL) free(luabuf);
+  return status;
+}
+
+
 static int execute_lua_buffer (const char *entry_name,
                                const unsigned char *luabuf,
                                size_t luasize) {
@@ -433,40 +496,17 @@ static int execute_lua_buffer (const char *entry_name,
 
 
 static int zip_memory_test_input (const char *zipname, const char *entry_name) {
-  unsigned char *zipbuf = NULL;
   unsigned char *luabuf = NULL;
-  const unsigned char *eocd;
-  const unsigned char *cfile;
-  int entry_result;
-  size_t zipsize = 0;
   size_t luasize = 0;
   int status = 1;
 
-  if (read_file_into_memory(zipname, &zipbuf, &zipsize) != 0) {
-    goto cleanup;
-  }
-  if (find_zip_eocd(zipbuf, zipsize, &eocd) != 0) {
-    l_message(progname, "invalid zip: cannot find EOCD");
-    goto cleanup;
-  }
-  entry_result = find_zip_entry(zipbuf, zipsize, eocd, entry_name, &cfile);
-  if (entry_result == 1) {
-    goto cleanup;
-  }
-  if (entry_result == 2) {
-    char message[512];
-    snprintf(message, sizeof(message), "entry %s not found in zip", entry_name);
-    l_message(progname, message);
-    goto cleanup;
-  }
-  if (extract_zip_entry(zipbuf, zipsize, cfile, &luabuf, &luasize) != 0) {
+  if (load_zip_entry_into_memory(zipname, entry_name, &luabuf, &luasize) != 0) {
     goto cleanup;
   }
 
   status = execute_lua_buffer(entry_name, luabuf, luasize);
 
 cleanup:
-  if (zipbuf != NULL) free(zipbuf);
   if (luabuf != NULL) free(luabuf);
   return status;
 }
