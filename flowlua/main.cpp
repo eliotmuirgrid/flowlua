@@ -5,10 +5,15 @@
 */
 
 
+#include "libc/c.inc"
+
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+
+#include "libc/zip.h"
+#include "third_party/zlib/zlib.h"
 
 #define lua_c
 
@@ -105,6 +110,8 @@ static void print_usage (void) {
   "usage: %s [options] [script [args]].\n"
   "Available options are:\n"
   "  -        execute stdin as a file\n"
+  "  --memory-test execute a hard-coded Lua chunk from memory\n"
+  "  --zip-memory-test execute <entry.lua> from <archive.zip> in memory\n"
   "  -e stat  execute string `stat'\n"
   "  -i       enter interactive mode after executing `script'\n"
   "  -l name  load and run library `name'\n"
@@ -179,6 +186,322 @@ static int file_input (const char *name) {
 
 static int dostring (const char *s, const char *name) {
   return docall(luaL_loadbuffer(L, s, strlen(s), name));
+}
+
+
+static int memory_test_input (void) {
+  static const char *chunk = "print(\"Hello from memory\")";
+  return docall(luaL_loadbuffer(L, chunk, strlen(chunk), "=@memory-test"));
+}
+
+
+static int read_file_into_memory (const char *zipname,
+                                  unsigned char **out_zipbuf,
+                                  size_t *out_zipsize) {
+  FILE *f = NULL;
+  unsigned char *zipbuf = NULL;
+  long zipsize_long;
+  size_t zipsize;
+  char message[512];
+
+  *out_zipbuf = NULL;
+  *out_zipsize = 0;
+
+  f = fopen(zipname, "rb");
+  if (f == NULL) {
+    snprintf(message, sizeof(message), "cannot open zip %s", zipname);
+    l_message(progname, message);
+    return 1;
+  }
+  if (fseek(f, 0, SEEK_END) != 0) {
+    snprintf(message, sizeof(message), "cannot seek zip %s", zipname);
+    l_message(progname, message);
+    fclose(f);
+    return 1;
+  }
+  zipsize_long = ftell(f);
+  if (zipsize_long <= 0) {
+    snprintf(message, sizeof(message), "empty or unreadable zip %s", zipname);
+    l_message(progname, message);
+    fclose(f);
+    return 1;
+  }
+  if (fseek(f, 0, SEEK_SET) != 0) {
+    snprintf(message, sizeof(message), "cannot rewind zip %s", zipname);
+    l_message(progname, message);
+    fclose(f);
+    return 1;
+  }
+
+  zipsize = (size_t)zipsize_long;
+  zipbuf = (unsigned char *)malloc(zipsize);
+  if (zipbuf == NULL) {
+    l_message(progname, "out of memory reading zip");
+    fclose(f);
+    return 1;
+  }
+  if (fread(zipbuf, 1, zipsize, f) != zipsize) {
+    snprintf(message, sizeof(message), "cannot read zip %s", zipname);
+    l_message(progname, message);
+    free(zipbuf);
+    fclose(f);
+    return 1;
+  }
+
+  fclose(f);
+  *out_zipbuf = zipbuf;
+  *out_zipsize = zipsize;
+  return 0;
+}
+
+
+static int find_zip_eocd (const unsigned char *zipbuf,
+                          size_t zipsize,
+                          const unsigned char **out_eocd) {
+  size_t eocd_start;
+  size_t eocd_min;
+  size_t at;
+
+  *out_eocd = NULL;
+  if (zipsize < kZipCdirHdrMinSize) return 1;
+
+  /* EOCD must live in the last 64KiB + header. */
+  eocd_start = zipsize - kZipCdirHdrMinSize;
+  eocd_min = (zipsize > (size_t)(65535 + kZipCdirHdrMinSize))
+                 ? (zipsize - (size_t)(65535 + kZipCdirHdrMinSize))
+                 : 0;
+  for (at = eocd_start + 1; at > eocd_min; --at) {
+    const unsigned char *p = zipbuf + (at - 1);
+    if (ZIP_CDIR_MAGIC(p) == kZipCdirHdrMagic &&
+        p + ZIP_CDIR_HDRSIZE(p) == zipbuf + zipsize) {
+      *out_eocd = p;
+      return 0;
+    }
+  }
+  return 1;
+}
+
+
+static int find_zip_entry (const unsigned char *zipbuf,
+                           size_t zipsize,
+                           const unsigned char *eocd,
+                           const char *entry_name,
+                           const unsigned char **out_cfile) {
+  const unsigned char *zp;
+  const unsigned char *zend;
+  uint32_t cdir_off;
+  uint16_t cdir_records;
+  int i;
+
+  *out_cfile = NULL;
+  cdir_off = ZIP_CDIR_OFFSET(eocd);
+  cdir_records = ZIP_CDIR_RECORDS(eocd);
+  zp = zipbuf + cdir_off;
+  zend = zipbuf + zipsize;
+  if (zp < zipbuf || zp > zend) {
+    l_message(progname, "invalid zip central directory offset");
+    return 1;  /* invalid central-directory state */
+  }
+
+  for (i = 0; i < (int)cdir_records; ++i) {
+    size_t namesz;
+    size_t hdrsz;
+    if (zp + kZipCfileHdrMinSize > zend) break;
+    if (ZIP_CFILE_MAGIC(zp) != kZipCfileHdrMagic) break;
+    namesz = ZIP_CFILE_NAMESIZE(zp);
+    hdrsz = ZIP_CFILE_HDRSIZE(zp);
+    if (zp + hdrsz > zend) break;
+    if (namesz == strlen(entry_name) &&
+        memcmp(ZIP_CFILE_NAME(zp), entry_name, namesz) == 0) {
+      *out_cfile = zp;
+      return 0;  /* found */
+    }
+    zp += hdrsz;
+  }
+
+  return 2;  /* entry not found */
+}
+
+
+static int extract_zip_entry (const unsigned char *zipbuf,
+                              size_t zipsize,
+                              const unsigned char *cfile,
+                              unsigned char **out_luabuf,
+                              size_t *out_luasize) {
+  int method = ZIP_CFILE_COMPRESSIONMETHOD(cfile);
+  uint32_t lfileoff = ZIP_CFILE_OFFSET(cfile);
+  uint32_t compsize = ZIP_CFILE_COMPRESSEDSIZE(cfile);
+  uint32_t uncsize = ZIP_CFILE_UNCOMPRESSEDSIZE(cfile);
+  const unsigned char *lfile;
+  const unsigned char *ldata;
+  const unsigned char *zend = zipbuf + zipsize;
+  unsigned char *luabuf = NULL;
+  size_t outsize;
+  char message[128];
+
+  *out_luabuf = NULL;
+  *out_luasize = 0;
+
+  if ((size_t)lfileoff > zipsize) {
+    l_message(progname, "local file offset outside zip");
+    return 1;
+  }
+
+  lfile = zipbuf + (size_t)lfileoff;
+  if (lfile + kZipLfileHdrMinSize > zend || ZIP_LFILE_MAGIC(lfile) != kZipLfileHdrMagic) {
+    l_message(progname, "invalid local file header");
+    return 1;
+  }
+
+  ldata = ZIP_LFILE_CONTENT(lfile);
+  if (ldata < zipbuf || ldata > zend || (size_t)(zend - ldata) < (size_t)compsize) {
+    l_message(progname, "zip entry data range is invalid");
+    return 1;
+  }
+
+  outsize = (size_t)uncsize;
+  luabuf = (unsigned char *)malloc(outsize ? outsize : 1);
+  if (luabuf == NULL) {
+    l_message(progname, "out of memory for lua entry");
+    return 1;
+  }
+
+  if (method == kZipCompressionNone) {
+    if (compsize != uncsize) {
+      l_message(progname, "stored zip entry size mismatch");
+      free(luabuf);
+      return 1;
+    }
+    if (outsize > 0) memcpy(luabuf, ldata, outsize);
+  }
+  else if (method == kZipCompressionDeflate) {
+    z_stream zs;
+    int zrc;
+    memset(&zs, 0, sizeof(zs));
+    zs.next_in = ldata;
+    zs.avail_in = compsize;
+    zs.next_out = luabuf;
+    zs.avail_out = (uInt)outsize;
+    zrc = inflateInit2(&zs, -15);  /* raw deflate stream in ZIP entry */
+    if (zrc != Z_OK) {
+      snprintf(message, sizeof(message), "inflateInit2 failed: %d", zrc);
+      l_message(progname, message);
+      free(luabuf);
+      return 1;
+    }
+    zrc = inflate(&zs, Z_FINISH);
+    inflateEnd(&zs);
+    if (zrc != Z_STREAM_END || zs.total_out != (uLong)outsize) {
+      snprintf(message, sizeof(message), "inflate failed: %d", zrc);
+      l_message(progname, message);
+      free(luabuf);
+      return 1;
+    }
+  }
+  else {
+    snprintf(message, sizeof(message), "unsupported zip method %d", method);
+    l_message(progname, message);
+    free(luabuf);
+    return 1;
+  }
+
+  *out_luabuf = luabuf;
+  *out_luasize = outsize;
+  return 0;
+}
+
+
+static int find_zip_entry_or_report (const unsigned char *zipbuf,
+                                     size_t zipsize,
+                                     const unsigned char *eocd,
+                                     const char *entry_name,
+                                     const unsigned char **out_cfile) {
+  int entry_result;
+  if (out_cfile == NULL) return 1;
+  *out_cfile = NULL;
+
+  entry_result = find_zip_entry(zipbuf, zipsize, eocd, entry_name, out_cfile);
+  if (entry_result == 0) return 0;
+  if (entry_result == 1) return 1;
+
+  {
+    char message[512];
+    snprintf(message, sizeof(message), "entry %s not found in zip", entry_name);
+    l_message(progname, message);
+  }
+  return 1;
+}
+
+
+static int load_zip_entry_into_memory (const char *zipname,
+                                       const char *entry_name,
+                                       unsigned char **out_luabuf,
+                                       size_t *out_luasize) {
+  unsigned char *zipbuf = NULL;
+  unsigned char *luabuf = NULL;
+  const unsigned char *eocd;
+  const unsigned char *cfile;
+  size_t zipsize = 0;
+  size_t luasize = 0;
+
+  *out_luabuf = NULL;
+  *out_luasize = 0;
+
+  if (read_file_into_memory(zipname, &zipbuf, &zipsize) != 0) {
+    return 1;
+  }
+  if (find_zip_eocd(zipbuf, zipsize, &eocd) != 0) {
+    l_message(progname, "invalid zip: cannot find EOCD");
+    free(zipbuf);
+    return 1;
+  }
+  if (find_zip_entry_or_report(zipbuf, zipsize, eocd, entry_name, &cfile) != 0) {
+    free(zipbuf);
+    return 1;
+  }
+  if (extract_zip_entry(zipbuf, zipsize, cfile, &luabuf, &luasize) != 0) {
+    free(zipbuf);
+    return 1;
+  }
+
+  free(zipbuf);
+  *out_luabuf = luabuf;
+  *out_luasize = luasize;
+  return 0;
+}
+
+
+static int execute_lua_buffer (const char *entry_name,
+                               const unsigned char *luabuf,
+                               size_t luasize) {
+  char *chunk_name = NULL;
+  size_t chunk_name_len = strlen(entry_name) + 7;  /* "=@zip:" + entry + NUL */
+  int status;
+
+  chunk_name = (char *)malloc(chunk_name_len);
+  if (chunk_name == NULL) {
+    l_message(progname, "out of memory for lua chunk name");
+    return 1;
+  }
+  snprintf(chunk_name, chunk_name_len, "=@zip:%s", entry_name);
+  status = docall(luaL_loadbuffer(L, (const char *)luabuf, luasize, chunk_name));
+  free(chunk_name);
+  return status;
+}
+
+
+static int zip_memory_test_input (const char *zipname, const char *entry_name) {
+  unsigned char *luabuf = NULL;
+  size_t luasize = 0;
+  int status;
+
+  if (load_zip_entry_into_memory(zipname, entry_name, &luabuf, &luasize) != 0) {
+    return 1;
+  }
+
+  status = execute_lua_buffer(entry_name, luabuf, luasize);
+  free(luabuf);
+  return status;
 }
 
 
@@ -312,17 +635,31 @@ static int handle_argv (char *argv[], int *interactive) {
   }
   else {  /* other arguments; loop over them */
     int i;
-    for (i = 1; argv[i] != NULL; i++) {
+    int stop_handling_options = 0;
+    for (i = 1; argv[i] != NULL && !stop_handling_options; i++) {
       if (argv[i][0] != '-') break;  /* not an option? */
       switch (argv[i][1]) {  /* option */
         case '-': {  /* `--' */
           if (argv[i][2] != '\0') {
+            if (strcmp(argv[i], "--memory-test") == 0) {
+              return memory_test_input();
+            }
+            if (strcmp(argv[i], "--zip-memory-test") == 0) {
+              const char *zipname = argv[++i];
+              const char *entry_name = argv[++i];
+              if (zipname == NULL || entry_name == NULL) {
+                l_message(progname,
+                          "usage: flowlua.com --zip-memory-test <archive.zip> <entry.lua>");
+                return 1;
+              }
+              return zip_memory_test_input(zipname, entry_name);
+            }
             BAS_TRC("Eliot hack for --trace");
-	    i++; 
+            i++;
             break;
           }
-          i++;  /* skip this argument */
-          goto endloop;  /* stop handling arguments */
+          stop_handling_options = 1;  /* loop increment skips this argument and stops option handling */
+          break;
         }
         case '\0': {
           file_input(NULL);  /* executes stdin as a file */
@@ -371,7 +708,7 @@ static int handle_argv (char *argv[], int *interactive) {
           return 1;
         }
       }
-    } endloop:
+    }
     if (argv[i] != NULL) {
       const char *filename = argv[i];
       getargs(argv, i);  /* collect arguments */
@@ -447,4 +784,3 @@ int main (int argc, char *argv[]) {
   lua_close(L);
   return (status || s.status) ? EXIT_FAILURE : EXIT_SUCCESS;
 }
-
