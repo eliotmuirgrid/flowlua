@@ -5,6 +5,7 @@ These instructions are setting up a project called [flowlua](https://interfacewa
 ### Create a directory for Cosmopolitan and download it
 
 ```bash
+cd $HOME
 mkdir cosmo
 curl -L -O https://cosmo.zip/pub/cosmocc/cosmocc.zip
 ```
@@ -29,18 +30,16 @@ cd flowlua/flowlua
 make -j16
 ```
 
-### Run it and try printing "Hello"
+### Run it 
 
 ```bash
 ./flowlua.com
 ```
-It should open up and see
+It should say something friendly like Hello. 
 
 ```
-Lua 5.0.3  Copyright (C) 1994-2006 Tecgraf, PUC-Rio
-> print "Hello"
 Hello
-> 
-
 ```
-Control+C to exit 
+
+Congratulations - one small step to a world when people
+can be safe and control their own data.

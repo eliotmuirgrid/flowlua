@@ -17,6 +17,6 @@ int main (int argc, char *argv[]) {
   }
   BASout << "Hello world of C++" << newline;
 
-  return EXIT_SUCCESS;
+  return 0;  // 0 means success.  Nothing is success apparently.
 }
 
