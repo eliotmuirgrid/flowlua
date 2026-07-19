@@ -1,4 +1,6 @@
+require "TEST/TESThello"
+
 
 function main()
-   print "Hello world"
+   TESThello(); 
 end
