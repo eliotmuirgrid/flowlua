@@ -12,11 +12,12 @@ BAS_TRACE_INIT;
 
 void APPhello(BASstream& Stream, const BASarray<BASstring>& Args){
    BAS_FUNCTION(APPhello);
-   BASstring Life = "Life";
-   BAS_VAR(Args);   
+   BAS_VAR(Args);
+   Stream << "Hello world!" << newline;
 }
 
 int main (int argc, const char** argv) {
+  BAS_FUNCTION(main);
   BASstring Match;
   BASarray<BASstring> Args;
   BASarrayCopy(argc, argv, &Args);
