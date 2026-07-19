@@ -6,7 +6,7 @@
  * Date: Wed  1 Jul 2026 06:17:53 EST
  ***************************************/
 
-#include "MOD/MODpathSet.h"
+#include "LUApathSet.h"
 
 #include "FIL/FILdir.h"
 
@@ -15,11 +15,12 @@
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
 
-void MODpathSet(lua_State* L){
-   BAS_FUNCTION(MODpathSet);
+void LUApathSet(lua_State* L){
+   BAS_FUNCTION(LUApathSet);
 
-   BASstring Dir = FILdirCurrent() + "/../code/?.lua";
-   Dir = FILpathSimplify(Dir);
+   BASstring Dir = FILdirCurrent() + "/code/?.lua";
+   BAS_VAR(Dir);
+   FILpathSimplify(&Dir);
    BAS_VAR(Dir);
    setenv("LUA_PATH", Dir.data(), Dir.size());
 }

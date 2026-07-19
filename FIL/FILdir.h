@@ -14,6 +14,8 @@
 
 class BASstring;
 
+#define FIL_DIR_SEPARATOR "/"
+
 BASstring FILdirCurrent();
-BASstring FILpathSimplify(const BASstring& Path);
+bool FILpathSimplify(BASstring* pPath);
 

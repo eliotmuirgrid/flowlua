@@ -1,4 +1,11 @@
-#include "MOD/MODlua.h"
+#include "LUA/LUAlua.h"
+
+#include "LUAC/lua.h"
+#include "LUAC/lauxlib.h"
+#include "LUAC/lualib.h"
+
+#include "LUA/LUApathSet.h"
+#include "LUA/LUAutil.h"
 
 #include "BAS/BASargFlagPresent.h"
 #include "BAS/BASstring.h"
@@ -8,12 +15,22 @@
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
 
-#include "MOD/MODpathSet.h"
-
-void APPhello(BASstream& Stream, const BASarray<BASstring>& Args){
-   BAS_FUNCTION(APPhello);
-   BAS_VAR(Args);
-   Stream << "Hello world!" << newline;
+void APPhello(const BASarray<BASstring>& Args){
+   lua_State *L = lua_open();
+   LUAloadLib(L);
+   LUApathSet(L);
+   if (luaL_loadfile(L, "main.lua") || lua_pcall(L, 0, 0, 0)) {
+      fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      lua_close(L);
+      return;
+   }
+   lua_getglobal(L, "main");
+   if (lua_pcall(L, 0, 0, 0)){
+      fprintf(stderr, "%s\n", lua_tostring(L, -1));
+      lua_close(L);
+      return;
+   }
+   lua_close(L);
 }
 
 int main (int argc, const char** argv) {
@@ -25,7 +42,7 @@ int main (int argc, const char** argv) {
   if (BASargFlagPresent("trace", &Match, &Args)){
      BAStrace(Match.data());
   }
-  APPhello(BASout, Args);
+  APPhello(Args);
 
   return 0;  // 0 means success.  Nothing is success apparently.
 }

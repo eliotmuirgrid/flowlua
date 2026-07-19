@@ -10,9 +10,9 @@
 #ifdef __cplusplus
 extern "C" {
 #endif
-   #include "LUA/lua.h"
-   #include "LUA/lauxlib.h"
-   #include "LUA/lualib.h"
+   #include "LUAC/lua.h"
+   #include "LUAC/lauxlib.h"
+   #include "LUAC/lualib.h"
 #ifdef __cplusplus
 }       
 #endif 

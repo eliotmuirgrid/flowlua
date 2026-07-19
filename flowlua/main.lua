@@ -1,1 +1,4 @@
-print "Hello world"
+
+function main()
+   print "Hello world"
+end

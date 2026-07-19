@@ -9,4 +9,4 @@
 
 typedef struct lua_State lua_State;
 
-void MODpathSet(lua_State* L);
+void LUApathSet(lua_State* L);
