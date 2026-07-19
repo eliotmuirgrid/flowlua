@@ -3,14 +3,14 @@
 #include "BAS/BASargFlagPresent.h"
 #include "BAS/BASstring.h"
 #include "BAS/BASstream.h"
-#include "BAS/BASarraySafe.h"
+#include "BAS/BASarray.h"
 #include "BAS/BASarrayCopy.h"
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
 
 #include "MOD/MODpathSet.h"
 
-void APPhello(BASstream& Stream, const BASarraySafe<BASstring>& Args){
+void APPhello(BASstream& Stream, const BASarray<BASstring>& Args){
    BAS_FUNCTION(APPhello);
    BASstring Life = "Life";
    BAS_VAR(Args);   
@@ -18,7 +18,7 @@ void APPhello(BASstream& Stream, const BASarraySafe<BASstring>& Args){
 
 int main (int argc, const char** argv) {
   BASstring Match;
-  BASarraySafe<BASstring> Args;
+  BASarray<BASstring> Args;
   BASarrayCopy(argc, argv, &Args);
 
   if (BASargFlagPresent("trace", &Match, &Args)){

@@ -8,8 +8,8 @@
 //-------------------------------------------------------
 
 class BASstring;
-template <class T> class BASarraySafe;
+template <class T> class BASarray;
 
 // If present it will populate the value in pValue
-bool BASargFlagPresent(const BASstring& Name, BASstring* pValue, BASarraySafe<BASstring>* pArgs);
+bool BASargFlagPresent(const BASstring& Name, BASstring* pValue, BASarray<BASstring>* pArgs);
 

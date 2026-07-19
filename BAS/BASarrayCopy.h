@@ -8,8 +8,8 @@
 //-------------------------------------------------------
 
 class BASstring;
-template<class T> class BASarraySafe;
+template<class T> class BASarray;
 
-void BASarrayCopy(int argc, const char** pValues, BASarraySafe<BASstring>* pOut); 
+void BASarrayCopy(int argc, const char** pValues, BASarray<BASstring>* pOut); 
 
 

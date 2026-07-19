@@ -4,16 +4,16 @@
 // Implementation 
 //-------------------------------------------------------
 #include "BASarrayCopy.h"
-#include "BASarraySafe.h"
+#include "BASarray.h"
 
 #include <string.h>
 
 #include "BAStrace.h" 
 BAS_TRACE_INIT
 
-void BASarrayCopy(int argc, const char** pValues, BASarraySafe<BASstring>* pOut){
+void BASarrayCopy(int argc, const char** pValues, BASarray<BASstring>* pOut){
    BAS_FUNCTION(BASarrayCopy);
-   BASarraySafe<BASstring>& Out = *pOut;
+   BASarray<BASstring>& Out = *pOut;
    Out.resize(argc);
    for (int i=0; i < argc; i++){
       Out[i] = pValues[i];

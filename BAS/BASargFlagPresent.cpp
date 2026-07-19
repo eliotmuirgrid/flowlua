@@ -6,14 +6,14 @@
 
 #include "BASargFlagPresent.h"
 #include "BASstring.h"
-#include "BASarraySafe.h"
+#include "BASarray.h"
 #include "BAStrace.h"
 BAS_TRACE_INIT
 
 
-bool BASargFlagPresent(const BASstring& Name, BASstring* pValue, BASarraySafe<BASstring>* pArgs){
+bool BASargFlagPresent(const BASstring& Name, BASstring* pValue, BASarray<BASstring>* pArgs){
    BAS_FUNCTION(BASargFlagPresent);
-   BASarraySafe<BASstring>& Args = *pArgs;
+   BASarray<BASstring>& Args = *pArgs;
    BAS_VAR2(Name, Args);
    BASstring Search = "--" + Name;
    for (int i=1; i < Args.size()-1; i++){

@@ -2,7 +2,7 @@
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
-// BASarraySafe
+// BASarray
 // 
 // Use this instead of raw arrays.  This stops you from
 // writing insecure code and screwing with your users.
@@ -20,14 +20,14 @@
 void BAScheckBoundary(int i, int m_Size);
 unsigned int BAScalculateCapacity(unsigned int v); 
 
-template<typename VType> class BASarraySafe {
+template<typename VType> class BASarray {
 public:
-   BASarraySafe() : m_Size(0), m_Capacity(0) { m_pItems = 0; }
-   BASarraySafe(int DesiredCapacity) : m_Size(0){
+   BASarray() : m_Size(0), m_Capacity(0) { m_pItems = 0; }
+   BASarray(int DesiredCapacity) : m_Size(0){
       m_Capacity = BAScalculateCapacity(DesiredCapacity);
       m_pItems = new VType[m_Capacity];
    }
-   ~BASarraySafe(){ delete []m_pItems; }
+   ~BASarray(){ delete []m_pItems; }
    int size() const { return m_Size; }
    void clear(){ m_Size=0; }
    void zero(){
@@ -76,7 +76,7 @@ private:
 };
 
 template<typename VType>
-BASstream& operator<<(BASstream& Stream, const BASarraySafe<VType>& Vector){
+BASstream& operator<<(BASstream& Stream, const BASarray<VType>& Vector){
    Vector.printOn(Stream);
    return Stream;
 }

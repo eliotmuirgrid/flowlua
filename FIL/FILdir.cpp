@@ -13,7 +13,7 @@
 
 #include "FIL/FILdir.h"
 
-#include "BAS/BASarraySafe.h"
+#include "BAS/BASarray.h"
 
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
@@ -63,7 +63,7 @@ BASstring FILpathSimplify(const BASstring& Path) {
       p += 3;
    }
 
-   BASarraySafe<BASstring> Parts;
+   BASarray<BASstring> Parts;
 
    while (*p) {
       while (*p == '/' || *p == '\\') {

@@ -1,12 +1,12 @@
 //-------------------------------------------------------
 // Copyright (C) 2026 Eliot Muir.  All Rights Reserved
 //
-// BASarraySafe
+// BASarray
 //
 // Implementation
 //-------------------------------------------------------
 
-#include "BASarraySafe.h"
+#include "BASarray.h"
 #include "BASerror.h"
 #include "BAStrace.h"
 BAS_TRACE_INIT;
