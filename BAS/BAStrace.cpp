@@ -18,6 +18,7 @@ void BASsetTraceFile(const char* FileName){}
 #include "BAShex.h"
 #include "BAStimestamp.h"
 #include "BASsinkFile.h"
+#include "BASthread.h"
 
 #include <time.h>
 #include <stdio.h>  // for printf
@@ -29,25 +30,6 @@ void BASsetTraceFile(const char* FileName){}
 
 #include <errno.h>
 #include <fcntl.h>
-
-//#ifdef _WIN32
-//  #include <windows.h>
-//  #include <sys/stat.h>
-//  #include <io.h>
-//#endif
-
-//#include "BASfileImp.h"
-
-//#ifndef O_BINARY
-//#define O_BINARY 0
-//#endif
-
-//#ifdef _WIN32
-//BASint64 BASthreadId(){ return (BASint64)GetCurrentThreadId(); }
-//#else
-//#include <pthread.h>
-//BASint64 BASthreadId(){ return (BASint64)pthread_self(); }
-//#endif
 
 
 //BASmutex s_LogMutex;
@@ -68,7 +50,9 @@ void BAStimeStamp(const char* pModule, BASstream& Stream){
    }
    BASlog << s_BAStimeBuffer;
    char Buffer[50];
-   int Count = sprintf(Buffer,".%06lli ", Time.Microseconds);  // pad milliseconds and thread id.
+   int Count = snprintf(Buffer, sizeof(Buffer), ".%06lli ", Time.Microseconds);  // pad milliseconds and thread id.
+   Stream.sink()->write(Buffer, Count);
+   Count = snprintf(Buffer, sizeof(Buffer), "%9d ", BASthreadId());
    Stream.sink()->write(Buffer, Count);
    Stream << pModule << " ";  // TODO should output size.
    BASwriteIndent(Stream.sink(), s_BASindentLevel);
@@ -89,7 +73,7 @@ static const char* s_TracePattern = "";
 void BAStrace(const char* pPattern){
    BASout << "### Tracing files matching: " << pPattern << newline;
    s_TracePattern = strdup(pPattern);  // purposely leaked.
-   BASlog << "  Timestamp       Thread ID   File" << newline;
+   BASlog << "  Timestamp       Thread ID File" << newline;
 }
 
 /*void BASsetTraceFile(const char* FileName){

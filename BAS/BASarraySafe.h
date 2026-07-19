@@ -1,11 +1,18 @@
-#ifndef _BAS_VECTOR_H_
-#define _BAS_VECTOR_H_
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
-// BASvector
+// BASarraySafe
 // 
-// A resizable array.  Could be further optimized with in place operators, move constructors etc.
+// Use this instead of raw arrays.  This stops you from
+// writing insecure code and screwing with your users.
+//
+// You shouldn't screw with your users or members of your
+// close family unless they are your spouse.  All these
+// things should be pretty obvious.  And yet not obvious
+// for a significant percentage of the population.
+//
+// Let's change that!
 //-------------------------------------------------------
 
 #include "BASstream.h"
@@ -13,14 +20,14 @@
 void BAScheckBoundary(int i, int m_Size);
 unsigned int BAScalculateCapacity(unsigned int v); 
 
-template<typename VType> class BASvector {
+template<typename VType> class BASarraySafe {
 public:
-   BASvector() : m_Size(0), m_Capacity(0) { m_pItems = 0; }
-   BASvector(int DesiredCapacity) : m_Size(0){
+   BASarraySafe() : m_Size(0), m_Capacity(0) { m_pItems = 0; }
+   BASarraySafe(int DesiredCapacity) : m_Size(0){
       m_Capacity = BAScalculateCapacity(DesiredCapacity);
       m_pItems = new VType[m_Capacity];
    }
-   ~BASvector(){ delete []m_pItems; }
+   ~BASarraySafe(){ delete []m_pItems; }
    int size() const { return m_Size; }
    void clear(){ m_Size=0; }
    void zero(){
@@ -69,8 +76,8 @@ private:
 };
 
 template<typename VType>
-BASstream operator<<(BASstream& Stream, const BASvector<VType>& Vector){
+BASstream& operator<<(BASstream& Stream, const BASarraySafe<VType>& Vector){
    Vector.printOn(Stream);
    return Stream;
 }
-#endif
+

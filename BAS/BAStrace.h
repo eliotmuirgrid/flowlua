@@ -52,7 +52,7 @@ void BASmilliSeconds();
 class BASmodule{
 public:
     BASmodule(const char* pFileName);
-    char ModuleName[25];
+    char ModuleName[20];
 };
 
 #ifdef _WIN32
@@ -77,10 +77,8 @@ private:
    do {\
       static int BASdoLog;\
       if (BASdoLog > 0 || (BASdoLog == 0 && BASloggingEnabled(sModule.ModuleName, &BASdoLog)) ){\
-         BASlogStream LogStream;\
-         LogStream << X << newline;\
-         BAStimeStamp(sModule.ModuleName, BASlog);\
-         BASlog << LogStream.m_String;\
+	 BAStimeStamp(sModule.ModuleName, BASlog);\
+         BASlog << X << newline;\
       }\
    } while(0)
 

@@ -1,12 +1,12 @@
 //-------------------------------------------------------
-// Copyright (C) 2021 Eliot Muir.  All Rights Reserved
+// Copyright (C) 2026 Eliot Muir.  All Rights Reserved
 //
-// BASvector
+// BASarraySafe
 //
 // Implementation
 //-------------------------------------------------------
 
-#include "BASvector.h"
+#include "BASarraySafe.h"
 #include "BASerror.h"
 #include "BAStrace.h"
 BAS_TRACE_INIT;
