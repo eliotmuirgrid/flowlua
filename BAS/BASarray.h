@@ -30,6 +30,14 @@ public:
    ~BASarray(){ delete []m_pItems; }
    int size() const { return m_Size; }
    void clear(){ m_Size=0; }
+   void remove(int Index) {
+      BAScheckBoundary(Index, m_Size);
+      for (int i = Index; i < m_Size - 1; ++i) {
+         m_pItems[i] = m_pItems[i + 1];
+      }
+      --m_Size;
+      m_pItems[m_Size].~VType();
+   }
    void zero(){
       m_Size=0;
       delete[]m_pItems;

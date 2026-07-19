@@ -19,8 +19,8 @@ bool BASargFlagPresent(const BASstring& Name, BASstring* pValue, BASarray<BASstr
    for (int i=1; i < Args.size()-1; i++){
       if (Search == Args[i]){
          *pValue = Args[i+1];
-	 //Args.remove(i);
-	 //Args.remove(i);
+	 Args.remove(i);
+	 Args.remove(i);
 	 return true;
       }
    }
