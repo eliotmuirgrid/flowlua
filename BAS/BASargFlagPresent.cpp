@@ -27,3 +27,16 @@ bool BASargFlagPresent(const BASstring& Name, BASstring* pValue, BASarray<BASstr
    return false;
 }
 
+bool BASargFindFlag(const BASstring& Name, BASarray<BASstring>* pArgs){
+   BAS_FUNCTION(BASargFindFlag);
+   BASarray<BASstring>& Args = *pArgs;
+   BAS_VAR2(Name, Args);
+   BASstring Search = "--" + Name;
+   for (int i=1; i < Args.size(); i++){
+      if (Search == Args[i]){
+         Args.remove(i);
+	 return true;
+      }
+   }
+   return false;
+}

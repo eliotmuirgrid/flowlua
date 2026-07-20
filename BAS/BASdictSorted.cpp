@@ -1,12 +1,12 @@
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
-// BASavlTree
+// BASdictSortedTree
 // 
 // Implementation
 //-------------------------------------------------------
 
-#include "BASavlTree.h"
+#include "BASdictSorted.h"
 
 #include "BASstring.h"
 
@@ -14,72 +14,72 @@
 #define NULL 0
 #endif
 
-BASavlNode::BASavlNode() : m_pLeft(NULL), m_pRight(NULL){
+BASdictSortedNode::BASdictSortedNode() : m_pLeft(NULL), m_pRight(NULL){
 }
 
-BASavlNode::~BASavlNode(){
+BASdictSortedNode::~BASdictSortedNode(){
    delete m_pLeft;
    delete m_pRight;
 }
 
 
-BASavlTreeBase::BASavlTreeBase(BASavlCompare pCompareFunc, BASavlExtractKey pKey) : m_pRoot(NULL), m_pCompareFunc(pCompareFunc), m_pKeyFunc(pKey), m_Size(0){
+BASdictSortedBase::BASdictSortedBase(BASavlCompare pCompareFunc, BASavlExtractKey pKey) : m_pRoot(NULL), m_pCompareFunc(pCompareFunc), m_pKeyFunc(pKey), m_Size(0){
 }
 
-BASavlTreeBase::~BASavlTreeBase(){
+BASdictSortedBase::~BASdictSortedBase(){
    delete m_pRoot;
 }
 
-int BASavlHeight(BASavlNode* pNode) {
+int BASdictSortedHeight(BASdictSortedNode* pNode) {
    if (pNode == NULL){ return 0; } // empty node - zero height
-   int LeftHeight  = BASavlHeight(pNode->m_pLeft);
-   int RightHeight = BASavlHeight(pNode->m_pRight);
+   int LeftHeight  = BASdictSortedHeight(pNode->m_pLeft);
+   int RightHeight = BASdictSortedHeight(pNode->m_pRight);
    return LeftHeight > RightHeight ? LeftHeight +1 : RightHeight + 1;
 }
 
-int BASavlDifference(BASavlNode* pNode){
-   return BASavlHeight(pNode->m_pLeft) - BASavlHeight(pNode->m_pRight);
+int BASdictSortedDifference(BASdictSortedNode* pNode){
+   return BASdictSortedHeight(pNode->m_pLeft) - BASdictSortedHeight(pNode->m_pRight);
 }
 
-static BASavlNode* rr_rotat(BASavlNode* pParent) {
-   BASavlNode* t;
+static BASdictSortedNode* rr_rotat(BASdictSortedNode* pParent) {
+   BASdictSortedNode* t;
    t = pParent->m_pRight;
    pParent->m_pRight = t->m_pLeft;
    t->m_pLeft = pParent;
    return t;
 }
 
-static BASavlNode* ll_rotat(BASavlNode* pParent) {
-   BASavlNode* t;
+static BASdictSortedNode* ll_rotat(BASdictSortedNode* pParent) {
+   BASdictSortedNode* t;
    t = pParent->m_pLeft;
    pParent->m_pLeft = t->m_pRight;
    t->m_pRight = pParent;
    return t;
 }
 
-static BASavlNode* lr_rotat(BASavlNode* pParent) {
-   BASavlNode* t;
+static BASdictSortedNode* lr_rotat(BASdictSortedNode* pParent) {
+   BASdictSortedNode* t;
    t = pParent->m_pLeft;
    pParent->m_pLeft = rr_rotat(t);
    return ll_rotat(pParent);
 }
 
-static BASavlNode* rl_rotat(BASavlNode* pParent) {
-   BASavlNode* t;
+static BASdictSortedNode* rl_rotat(BASdictSortedNode* pParent) {
+   BASdictSortedNode* t;
    t = pParent->m_pRight;
    pParent->m_pRight = ll_rotat(t);
    return rr_rotat(pParent);
 }
 
-BASavlNode* BASavlBalance(BASavlNode* pNode) {
-   int Balance = BASavlDifference(pNode);
+BASdictSortedNode* BASdictSortedBalance(BASdictSortedNode* pNode) {
+   int Balance = BASdictSortedDifference(pNode);
    if (Balance > 1) {
-      if (BASavlDifference(pNode->m_pLeft) > 0)
+      if (BASdictSortedDifference(pNode->m_pLeft) > 0)
          pNode = ll_rotat(pNode);
       else
          pNode = lr_rotat(pNode);
    } else if (Balance < -1) {
-      if (BASavlDifference(pNode->m_pRight) > 0)
+      if (BASdictSortedDifference(pNode->m_pRight) > 0)
          pNode = rl_rotat(pNode);
       else
          pNode = rr_rotat(pNode);
@@ -87,7 +87,7 @@ BASavlNode* BASavlBalance(BASavlNode* pNode) {
    return pNode;
 }
 
-BASavlNode* BASinsert(BASavlNode* pNode, BASavlNode* pNewNode, BASavlCompare pCompFunc, BASavlExtractKey pKeyFunc, int* pSize){
+BASdictSortedNode* BASinsert(BASdictSortedNode* pNode, BASdictSortedNode* pNewNode, BASavlCompare pCompFunc, BASavlExtractKey pKeyFunc, int* pSize){
    if (pNode == NULL){
       (*pSize)++;
       return pNewNode;
@@ -99,18 +99,18 @@ BASavlNode* BASinsert(BASavlNode* pNode, BASavlNode* pNewNode, BASavlCompare pCo
    }
    if (Compare > 0){
       pNode->m_pLeft = BASinsert(pNode->m_pLeft, pNewNode, pCompFunc,pKeyFunc, pSize);
-      return BASavlBalance(pNode);
+      return BASdictSortedBalance(pNode);
    }
    pNode->m_pRight = BASinsert(pNode->m_pRight, pNewNode, pCompFunc,pKeyFunc, pSize);
-   return BASavlBalance(pNode);
+   return BASdictSortedBalance(pNode);
 }
 
 
-void BASavlTreeBase::insert(BASavlNode* pNewNode){
+void BASdictSortedBase::insert(BASdictSortedNode* pNewNode){
    m_pRoot = BASinsert(m_pRoot, pNewNode, m_pCompareFunc, m_pKeyFunc, &m_Size);
 }
 
-BASavlNode* BASfind(BASavlNode* pNode, const void* pKey, BASavlCompare pCompFunc, BASavlExtractKey pKeyFunc){
+BASdictSortedNode* BASfind(BASdictSortedNode* pNode, const void* pKey, BASavlCompare pCompFunc, BASavlExtractKey pKeyFunc){
    if (pNode == NULL){
       return NULL;
    }
@@ -125,15 +125,15 @@ BASavlNode* BASfind(BASavlNode* pNode, const void* pKey, BASavlCompare pCompFunc
    }
 }
 
-BASavlNode* BASavlTreeBase::find(const void* pKey) const{
-   return BASfind((BASavlNode*)m_pRoot, pKey, m_pCompareFunc, m_pKeyFunc);
+BASdictSortedNode* BASdictSortedBase::find(const void* pKey) const{
+   return BASfind((BASdictSortedNode*)m_pRoot, pKey, m_pCompareFunc, m_pKeyFunc);
 }
 
 int BASsCompare(const BASstring& Rhs, const BASstring& Lhs){
    return Rhs.compare(Lhs);
 }
 
-BASstream& operator<<(BASstream& Stream, const BASavlNode& Node){
+BASstream& operator<<(BASstream& Stream, const BASdictSortedNode& Node){
    //Stream << Node.m_Key; 
    if (!Node.m_pRight && !Node.m_pLeft){
       return Stream; // empty node
@@ -150,16 +150,16 @@ BASstream& operator<<(BASstream& Stream, const BASavlNode& Node){
    return Stream;
 }
 
-BASavlIterator::BASavlIterator(BASavlNode* pRoot) : m_StackPos(1){
+BASdictSortedIterator::BASdictSortedIterator(BASdictSortedNode* pRoot) : m_StackPos(1){
    m_Stack[0] = NULL;
    m_Stack[1] = pRoot;
 }
 
-void BASavlIterator::first(){
+void BASdictSortedIterator::first(){
    downLeft();
 }
 
-bool BASavlIterator::next(){
+bool BASdictSortedIterator::next(){
    if (root()->m_pRight != NULL){
       goRight();
       return downLeft();
@@ -167,12 +167,12 @@ bool BASavlIterator::next(){
    return upRight();
 }
 
-void BASavlIterator::goRight(){
+void BASdictSortedIterator::goRight(){
    m_StackPos++;
    m_Stack[m_StackPos] = parent()->m_pRight; 
 }
 
-bool BASavlIterator::downLeft(){
+bool BASdictSortedIterator::downLeft(){
    while (root()->m_pLeft != NULL){
       m_StackPos++;
       m_Stack[m_StackPos] = parent()->m_pLeft; 
@@ -180,7 +180,7 @@ bool BASavlIterator::downLeft(){
    return true;
 }
 
-bool BASavlIterator::upRight(){
+bool BASdictSortedIterator::upRight(){
    while (m_StackPos > 1 && parent()->m_pRight == root()){
       pop();
    }
@@ -188,6 +188,6 @@ bool BASavlIterator::upRight(){
    return root() != NULL;
 }
 
-void BASavlIterator::pop(){
+void BASdictSortedIterator::pop(){
    m_StackPos--;
 }

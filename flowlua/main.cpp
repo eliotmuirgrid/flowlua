@@ -4,8 +4,12 @@
 #include "LUAC/lauxlib.h"
 #include "LUAC/lualib.h"
 
+#include "LUA/LUAarray.h"
 #include "LUA/LUApathSet.h"
 #include "LUA/LUAutil.h"
+#include "LUA/LUAdir.h"
+
+#include "APPinstall.h"
 
 #include "BAS/BASargFlagPresent.h"
 #include "BAS/BASstring.h"
@@ -15,9 +19,11 @@
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
 
-void APPhello(const BASarray<BASstring>& Args){
+void APPrun(const BASarray<BASstring>& Args){
+   BAS_FUNCTION(APPrun);
    lua_State *L = lua_open();
    LUAloadLib(L);
+   LUAloadDir(L);
    LUApathSet(L);
    if (luaL_loadfile(L, "main.lua") || lua_pcall(L, 0, 0, 0)) {
       fprintf(stderr, "%s\n", lua_tostring(L, -1));
@@ -25,7 +31,8 @@ void APPhello(const BASarray<BASstring>& Args){
       return;
    }
    lua_getglobal(L, "main");
-   if (lua_pcall(L, 0, 0, 0)){
+   LUApushArray(L, Args);
+   if (lua_pcall(L, 1, 0, 0)){
       fprintf(stderr, "%s\n", lua_tostring(L, -1));
       lua_close(L);
       return;
@@ -39,10 +46,10 @@ int main (int argc, const char** argv) {
   BASarray<BASstring> Args;
   BASarrayCopy(argc, argv, &Args);
 
-  if (BASargFlagPresent("trace", &Match, &Args)){
-     BAStrace(Match.data());
-  }
-  APPhello(Args);
+  if (BASargFlagPresent("trace", &Match, &Args)){ BAStrace(Match.data()); }
+  if (BASargFindFlag("install", &Args))         { APPinstall(); return 0; }
+
+  APPrun(Args);
 
   return 0;  // 0 means success.  Nothing is success apparently.
 }

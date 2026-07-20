@@ -13,7 +13,10 @@
 
 #include "FIL/FILdir.h"
 
+#include <dirent.h>
+
 #include "BAS/BASarray.h"
+#include "BAS/BASdictSorted.h"
 
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
@@ -257,6 +260,20 @@ bool FILpathSimplify(BASstring* pPath) {
    BASstring SimplePath(pOutputStart, pOutput - pOutputStart);
    BAS_VAR(SimplePath);
    Path = SimplePath; 
+   return true;
+}
+
+bool FILdirList(const BASstring& Dir,BASdictSorted<BASstring, BASfile>* pList){
+   DIR* dir = opendir(Dir.data());
+
+   if (!dir) { return false; }
+
+   struct dirent* ent;
+
+   while ((ent = readdir(dir)) != NULL) {
+      pList->add(ent->d_name, BASfile()); 
+   }
+   closedir(dir);
    return true;
 }
 

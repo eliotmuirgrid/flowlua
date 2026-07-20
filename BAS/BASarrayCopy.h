@@ -7,8 +7,7 @@
 // Command line argument parser routines
 //-------------------------------------------------------
 
-class BASstring;
-template<class T> class BASarray;
+#include "BAS/BASbase.h"
 
 void BASarrayCopy(int argc, const char** pValues, BASarray<BASstring>* pOut); 
 
