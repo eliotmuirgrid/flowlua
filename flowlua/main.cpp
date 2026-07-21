@@ -7,6 +7,7 @@
 #include "LUA/LUAarray.h"
 #include "LUA/LUApathSet.h"
 #include "LUA/LUAutil.h"
+#include "LUA/LUAtrace.h"
 #include "LUA/LUAdir.h"
 
 #include "APPinstall.h"
@@ -19,9 +20,8 @@
 #include "BAS/BAStrace.h"
 BAS_TRACE_INIT;
 
-void APPrun(const BASarray<BASstring>& Args){
+void APPrun(lua_State* L, const BASarray<BASstring>& Args){
    BAS_FUNCTION(APPrun);
-   lua_State *L = lua_open();
    LUAloadLib(L);
    LUAloadDir(L);
    LUApathSet(L);
@@ -46,10 +46,13 @@ int main (int argc, const char** argv) {
   BASarray<BASstring> Args;
   BASarrayCopy(argc, argv, &Args);
 
-  if (BASargFlagPresent("trace", &Match, &Args)){ BAStrace(Match.data()); }
+  if (BASargFlagPresent("ctrace", &Match, &Args)){ BAStrace(Match.data()); }
   if (BASargFindFlag("install", &Args))         { APPinstall(); return 0; }
+  
+  lua_State* L = lua_open();
+  if (BASargFlagPresent("ltrace", &Match, &Args)){ LUAtrace(L, Match.data()); }
 
-  APPrun(Args);
+  APPrun(L, Args);
 
   return 0;  // 0 means success.  Nothing is success apparently.
 }
