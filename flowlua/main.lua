@@ -1,5 +1,7 @@
+require "TEST/TESThello"
 
 function main(Arg)
+   TESThello()
    local C = table.getn(Arg)
 
    if C < 2 then
@@ -7,7 +9,7 @@ function main(Arg)
       return;
    end
 
-   local ok, Command = pcall(require, "commands/"..Arg[2])
+--[[   local ok, Command = pcall(require, "commands/"..Arg[2])
 
    if not ok then
       print(module);
@@ -16,5 +18,5 @@ function main(Arg)
    end
    table.remove(Arg,1)
    table.remove(Arg,1)
-   Command(Arg);
+   Command(Arg);]]
 end
