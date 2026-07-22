@@ -17,11 +17,11 @@ unzip -q cosmocc.zip -d cosmo
 rm cosmocc.zip
 ```
 
-### Clone the FlowLua source into ~/flowlua and enter the source directory
+### Clone the Flow source into ~/flow and enter the source directory
 
 ```bash
-git clone https://github.com/eliotmuirgrid/flowlua
-cd flowlua/flowlua
+git clone https://github.com/eliotmuirgrid/flow
+cd flow
 ```
 
 ###  Build the program with make -j16 for faster parallel build.
@@ -33,7 +33,7 @@ make -j16
 ### Run it 
 
 ```bash
-./flowlua.com
+./flow.com
 ```
 It should say something friendly like Hello. 
 

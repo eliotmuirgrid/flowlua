@@ -10,8 +10,6 @@
 #include "LUA/LUAtrace.h"
 #include "LUA/LUAdir.h"
 
-#include "APPinstall.h"
-
 #include "COL/COLargFlagPresent.h"
 #include "COL/COLstring.h"
 #include "COL/COLstream.h"
@@ -46,15 +44,13 @@ int main (int argc, const char** argv) {
   COLarray<COLstring> Args;
   COLarrayCopy(argc, argv, &Args);
 
-  bool Tracing = false;
-  if (COLargFlagPresent("ctrace", &Match, &Args)){ COLtrace(Match.data()); Tracing=true; }
-  if (COLargFindFlag   ("install", &Args))       { APPinstall(); return 0; }
-  
   lua_State* L = lua_open();
-  if (COLargFlagPresent("ltrace", &Match, &Args)){ LUAtrace(L, Match.data()); Tracing = true; }
-  COL_VAR(Tracing);
-  if (Tracing) { COLheader(); }
-
+  if (COLargFlagPresent("trace", &Match, &Args)){ 
+     COLtrace(Match.data()); 
+     LUAtrace(L, Match.data());
+     COLheader(); 
+  }
+  
   APPrun(L, Args);
 
   return 0;  // 0 means success.  Nothing is success apparently.

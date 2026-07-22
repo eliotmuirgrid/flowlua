@@ -38,6 +38,14 @@ COLstream COLlog(new COLsinkFile(1), false);  // purposely leaked.
 
 static thread_local int s_COLindentLevel=0;
 
+void COLcallIncrease(){
+   s_COLindentLevel++;
+}
+
+void COLcallDecrease(){
+   s_COLindentLevel--;
+}
+
 static char   s_COLtimeBuffer[64];
 static time_t s_COLlastTimeStamp=0;
 
@@ -54,30 +62,24 @@ void COLtimeStamp(const char* pModule, COLstream& Stream){
    Stream.sink()->write(Buffer, Count);
    Count = snprintf(Buffer, sizeof(Buffer), "%-9d ", COLthreadId());
    Stream.sink()->write(Buffer, Count);
-   Count = snprintf(Buffer, sizeof(Buffer), "%-18s ", pModule); 
+   Count = snprintf(Buffer, sizeof(Buffer), "%-25s ", pModule); 
    Stream.sink()->write(Buffer, Count);
    COLwriteIndent(Stream.sink(), s_COLindentLevel);
 }
 
 COLmodule::COLmodule(const char* pFileName){
-   int Length = strlen(pFileName)-4;
-   strncpy(ModuleName, pFileName, Length);
-   char* pEnd = ModuleName + sizeof(ModuleName)-2;
-   for (char* i = ModuleName + Length; i != pEnd; i++){
-      *i = ' ';
-   }
-   ModuleName[sizeof(ModuleName)-1] = 0;
+   strncpy(ModuleName, pFileName, sizeof(ModuleName));
 }
 
 static const char* s_TracePattern = "";
 
 void COLtrace(const char* pPattern){
-   COLout << "# Tracing C++ files matching: " << pPattern << newline;
+   COLout << "# Tracing files matching: " << pPattern << newline;
    s_TracePattern = strdup(pPattern);  // purposely leaked.
 }
 
 void COLheader(){
-   COLlog << "  Timestamp       Thread ID File               Trace Output" << newline;
+   COLlog << "  Timestamp       Thread ID File                       Trace Output" << newline;
 }
 
 /*void COLsetTraceFile(const char* FileName){
@@ -105,7 +107,7 @@ COLraiiFunc::COLraiiFunc(const char* Name, const char* pModule, int Line, bool T
    if (Trace){
       //COLlocker Lock(s_LogMutex);
       COLtimeStamp(pModule, COLlog); COLlog << ">" << Name << " Line:" << Line << newline;
-      s_COLindentLevel++;
+      COLcallIncrease();
    }
 }
 
@@ -113,13 +115,13 @@ COLraiiFunc::COLraiiFunc(const char* Name, const char* pModule, int Line, const 
    if (Trace){
    //   COLlocker Lock(s_LogMutex);
       COLtimeStamp(pModule, COLlog); COLlog << ">" << Name << " Line:" << Line << " this=" << pInstance << newline;
-      s_COLindentLevel++;
+      COLcallIncrease();
    }
 }
 
 COLraiiFunc::~COLraiiFunc(){
    if (m_Trace){
-      s_COLindentLevel--;
+      COLcallDecrease();
  //     COLlocker Lock(s_LogMutex);
       COLtimeStamp(m_pModule, COLlog); COLlog << "<" << m_pName << newline;
    }

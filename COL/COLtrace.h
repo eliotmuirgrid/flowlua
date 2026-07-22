@@ -31,6 +31,9 @@ void COLtrace(const char* Pattern);
 void COLsetTraceFile(const char* FileName);
 void COLheader();
 
+void COLcallIncrease();
+void COLcallDecrease();
+
 //#define COL_TRACE_OFF  // uncomment this to turn tracing off.
 #ifdef COL_TRACE_OFF
 #define COL_TRC(A)
@@ -53,7 +56,7 @@ void COLmilliSeconds();
 class COLmodule{
 public:
    COLmodule(const char* pFileName);
-   char ModuleName[20];
+   char ModuleName[30];
 };
 
 #ifdef _WIN32

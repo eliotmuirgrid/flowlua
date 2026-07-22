@@ -1,5 +1,4 @@
-#ifndef _COL_UTIL_H__
-#define _COL_UTIL_H__
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
@@ -8,9 +7,9 @@
 // MAX/MIN macros etc.
 //-------------------------------------------------------
 
-#define COL_MIN(a,b) (((a)<(b))?(a):(b))
-#define COL_MAX(a,b) (((a)>(b))?(a):(b))
+template <typename T> constexpr const T& COL_MAX(const T& A, const T& B) { return A > B ? A : B; }
+template <typename T> constexpr const T& COL_MIN(const T& A, const T& B) { return A < B ? A : B; }
+
 
 void COLsleep(int Milliseconds);
 
-#endif

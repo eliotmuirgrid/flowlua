@@ -1,63 +1,59 @@
-TARGET=flowlua.com
+TARGET    := flow.com
+BUILD_DIR := build
 
-TOOL_DIR:=$(HOME)/cosmo/bin/
+TOOL_DIR := $(HOME)/cosmo/bin/
 
-# Wildcard matching to figure out where sources are based on the DIRS variable
-OBJEXT  := .o
-LIBEXT  := a
+CC  := $(TOOL_DIR)cosmocc
+CXX := $(TOOL_DIR)cosmoc++
 
-# Safely expand search paths
+# Find C and C++ source files in immediate subdirectories.
 DIRS    := $(wildcard ./*/)
-SEARCH  := $(foreach dir, $(DIRS), $(dir)*.c $(dir)*.cpp) 
+SEARCH  := $(foreach dir,$(DIRS),$(dir)*.c $(dir)*.cpp)
 SOURCES := $(wildcard $(SEARCH))
 
-# Use patsubst instead of subst to prevent corrupting folder names containing ".c"
-OBJECTS := $(patsubst %.cpp, %$(OBJEXT), $(SOURCES))
-OBJECTS := $(patsubst %.cpp, %$(OBJEXT), $(SOURCES))
-OBJECTS := $(patsubst %.c, %$(OBJEXT), $(OBJECTS))
-DEPENDS := $(patsubst %$(OBJEXT), %.o.d, $(OBJECTS))
+# Convert:
+#   COL/COLstring.cpp     -> build/COL/example.o
+OBJECTS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(SOURCES)))
+OBJECTS += $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(SOURCES)))
 
-OBJECTS := $(OBJECTS) $(OBJECTS_EXTRA)
+# Add any explicitly supplied object files.
+OBJECTS += $(OBJECTS_EXTRA)
 
-# If a target is not defined, default to test.com
-TARGET  ?= test.com
+# -MMD generates a .d file beside each object file.
+DEPENDS := $(OBJECTS:.o=.d)
 
-# Define our clean list
-RMLIST  := $(foreach dir, $(DIRS), $(dir)*.o $(dir)*.d) *.d *.o *~ *.elf *.dbg 
+PCFLAGS   := -Wno-pointer-to-int-cast -MMD -MP -I.
+PCPPFLAGS := -MMD -MP -I.
 
-.PHONY: all info clean
+.PHONY: all clean show depends
 
 all: $(TARGET)
 
-CC     := $(TOOL_DIR)cosmocc
-CXX    := $(TOOL_DIR)cosmoc++
-
-PCFLAGS := -Wno-pointer-to-int-cast -MMD -MP -I. 
-PCPPFLAGS := -MMD -MP -I. 
-
-$(TARGET): $(OBJECTS) 
+$(TARGET): $(OBJECTS)
+	@mkdir -p $(dir $@)
 	$(CXX) $(OBJECTS) -o $@
 
-%.o: %.c
+$(BUILD_DIR)/%.o: %.c
+	@mkdir -p $(dir $@)
 	$(CC) $(PCFLAGS) -c -o $@ $<
 
-%.o: %.cpp
+$(BUILD_DIR)/%.o: %.cpp
+	@mkdir -p $(dir $@)
 	$(CXX) $(PCPPFLAGS) -c -o $@ $<
 
 depends:
 	@echo DEPENDS = $(DEPENDS)
 
 show:
-	@echo "Making: " $(TARGET)
+	@echo "Making: $(TARGET)"
 	@echo CC      = $(CC)
 	@echo SEARCH  = $(SEARCH)
 	@echo SOURCES = $(SOURCES)
 	@echo OBJECTS = $(OBJECTS)
 	@echo DEPENDS = $(DEPENDS)
 
-# Use double colon rule for clean so regular makefiles can perform additional cleaning. 
 clean::
-	-$(RM) $(RMLIST)
+	$(RM) -r $(BUILD_DIR) *.elf *.dbg
 
 -include $(DEPENDS)
 

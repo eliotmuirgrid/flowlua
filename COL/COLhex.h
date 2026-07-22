@@ -1,5 +1,4 @@
-#ifndef _COL_HEX_H_
-#define _COL_HEX_H_
+#pragma once
 //-------------------------------------------------------
 // Copyright (C) 2021 Eliot Muir.  All Rights Reserved
 //
@@ -12,4 +11,3 @@ class COLsink;
 
 void COLhex(int Size, const void* pData, COLsink* pSink, int Indent);
 
-#endif

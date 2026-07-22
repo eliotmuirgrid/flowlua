@@ -18,7 +18,7 @@ COL_TRACE_INIT;
 void LUApathSet(lua_State* L){
    COL_FUNCTION(LUApathSet);
 
-   COLstring Dir = FILdirCurrent() + "../?.lua";
+   COLstring Dir = FILdirCurrent() + "./?.lua";
    COL_VAR(Dir);
    FILpathSimplify(&Dir);
    COL_VAR(Dir);
