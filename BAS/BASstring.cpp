@@ -8,6 +8,8 @@
 #include "BASstring.h"
 #include "BASstream.h"
 #include "BASsink.h"
+#include "BAStrace.h"
+BAS_TRACE_INIT;
 
 #include <string.h>
 
@@ -126,8 +128,23 @@ bool BASstring::operator!=(const BASstring& Rhs) const{
    return !operator==(Rhs);
 }
 
-BASstring operator+(const BASstring& Lhs, const char*   pRhs  ) { BASstring X(Lhs); X+= pRhs; return X;}
-BASstring operator+(const BASstring& Lhs, const BASstring& Rhs) { BASstring X(Lhs); X+= Rhs; return X;}
+int BASstring::reverseFind(char Char) const{
+   BAS_METHOD(BASstring::reverseFind);
+   BAS_VAR2(Char, *this); 
+   for (int i=size()-1; i>=0; i--){
+     if (data()[i] == Char){
+	return i;
+     }
+   }
+   return -1;
+}
+
+// TODO boundary checks
+BASstring BASstring::substr(int Start, int Size) const{ return BASstring(data()+Start, Size);         }
+BASstring BASstring::substr(int Start) const          { return BASstring(data()+Start, size()-Start); }
+
+BASstring operator+(const BASstring& Lhs, const char*     pRhs) { BASstring X(Lhs); X+= pRhs; return X;}
+BASstring operator+(const BASstring& Lhs, const BASstring& Rhs) { BASstring X(Lhs); X+= Rhs;  return X;}
 
 BASstream& operator<<(BASstream& Stream, const BASstring& String){
    Stream.sink()->write(String.data(), String.size());

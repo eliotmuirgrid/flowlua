@@ -52,9 +52,10 @@ void BAStimeStamp(const char* pModule, BASstream& Stream){
    char Buffer[50];
    int Count = snprintf(Buffer, sizeof(Buffer), ".%06lli ", Time.Microseconds);  // pad milliseconds and thread id.
    Stream.sink()->write(Buffer, Count);
-   Count = snprintf(Buffer, sizeof(Buffer), "%9d ", BASthreadId());
+   Count = snprintf(Buffer, sizeof(Buffer), "%-9d ", BASthreadId());
    Stream.sink()->write(Buffer, Count);
-   Stream << pModule << " ";  // TODO should output size.
+   Count = snprintf(Buffer, sizeof(Buffer), "%-18s ", pModule); 
+   Stream.sink()->write(Buffer, Count);
    BASwriteIndent(Stream.sink(), s_BASindentLevel);
 }
 
@@ -71,9 +72,12 @@ BASmodule::BASmodule(const char* pFileName){
 static const char* s_TracePattern = "";
 
 void BAStrace(const char* pPattern){
-   BASout << "### Tracing files matching: " << pPattern << newline;
+   BASout << "# Tracing C++ files matching: " << pPattern << newline;
    s_TracePattern = strdup(pPattern);  // purposely leaked.
-   BASlog << "  Timestamp       Thread ID File" << newline;
+}
+
+void BASheader(){
+   BASlog << "  Timestamp       Thread ID File               Trace Output" << newline;
 }
 
 /*void BASsetTraceFile(const char* FileName){

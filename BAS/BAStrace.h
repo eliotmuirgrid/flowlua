@@ -29,6 +29,7 @@
 // Call this to activate tracing - see BASarg too
 void BAStrace(const char* Pattern);
 void BASsetTraceFile(const char* FileName);
+void BASheader();
 
 //#define BAS_TRACE_OFF  // uncomment this to turn tracing off.
 #ifdef BAS_TRACE_OFF
@@ -51,8 +52,8 @@ void BASmilliSeconds();
 
 class BASmodule{
 public:
-    BASmodule(const char* pFileName);
-    char ModuleName[20];
+   BASmodule(const char* pFileName);
+   char ModuleName[20];
 };
 
 #ifdef _WIN32
@@ -95,14 +96,10 @@ void BAShexTrace(int Size, const void* pBuffer, BASstream& Stream);
       }\
    } while(0)
 
-
-
-
 #define BAS_VAR(A)        BAS_TRC(#A << " = " << A);
 #define BAS_VAR2(A,B)     BAS_TRC(#A << " = " << A << ", " << #B << " = " << B);
 #define BAS_VAR3(A,B,C)   BAS_TRC(#A << " = " << A << ", " << #B << " = " << B << ", " << #C << " = " << C);
 #define BAS_VAR4(A,B,C,D) BAS_TRC(#A << " = " << A << ", " << #B << " = " << B << ", " << #C << " = " << C << ", " << #D << " = " << D);
-
 
 class BASraiiFunc{
 public:

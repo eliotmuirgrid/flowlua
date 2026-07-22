@@ -46,11 +46,14 @@ int main (int argc, const char** argv) {
   BASarray<BASstring> Args;
   BASarrayCopy(argc, argv, &Args);
 
-  if (BASargFlagPresent("ctrace", &Match, &Args)){ BAStrace(Match.data()); }
-  if (BASargFindFlag("install", &Args))         { APPinstall(); return 0; }
+  bool Tracing = false;
+  if (BASargFlagPresent("ctrace", &Match, &Args)){ BAStrace(Match.data()); Tracing=true; }
+  if (BASargFindFlag   ("install", &Args))       { APPinstall(); return 0; }
   
   lua_State* L = lua_open();
-  if (BASargFlagPresent("ltrace", &Match, &Args)){ LUAtrace(L, Match.data()); }
+  if (BASargFlagPresent("ltrace", &Match, &Args)){ LUAtrace(L, Match.data()); Tracing = true; }
+  BAS_VAR(Tracing);
+  if (Tracing) { BASheader(); }
 
   APPrun(L, Args);
 

@@ -17,6 +17,9 @@ public:
    BASstring(const BASstring& Orig);
    ~BASstring();
 
+   BASstring substr(int Start, int Size) const;
+   BASstring substr(int Start) const;
+
    bool empty() const { return m_Size ==0; }
 
    int size() const { return m_Size; }
@@ -43,6 +46,8 @@ public:
    bool operator!=(const BASstring& Rhs) const;
 
    int compare(const BASstring& Lhs) const;
+
+   int reverseFind(char Char) const;
 
    const char& operator[](int i) const{ return data()[i]; }	   
    char& operator[](int i)            { return data()[i]; }	   
