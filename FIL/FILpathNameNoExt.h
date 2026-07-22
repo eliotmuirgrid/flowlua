@@ -1,5 +1,5 @@
 #pragma once
 
-class BASstring;
+class COLstring;
 
-BASstring FILpathNameNoExt(const BASstring& Path);
+COLstring FILpathNameNoExt(const COLstring& Path);

@@ -12,16 +12,16 @@
 
 #include "APPinstall.h"
 
-#include "BAS/BASargFlagPresent.h"
-#include "BAS/BASstring.h"
-#include "BAS/BASstream.h"
-#include "BAS/BASarray.h"
-#include "BAS/BASarrayCopy.h"
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT;
+#include "COL/COLargFlagPresent.h"
+#include "COL/COLstring.h"
+#include "COL/COLstream.h"
+#include "COL/COLarray.h"
+#include "COL/COLarrayCopy.h"
+#include "COL/COLtrace.h"
+COL_TRACE_INIT;
 
-void APPrun(lua_State* L, const BASarray<BASstring>& Args){
-   BAS_FUNCTION(APPrun);
+void APPrun(lua_State* L, const COLarray<COLstring>& Args){
+   COL_FUNCTION(APPrun);
    LUAloadLib(L);
    LUAloadDir(L);
    LUApathSet(L);
@@ -41,19 +41,19 @@ void APPrun(lua_State* L, const BASarray<BASstring>& Args){
 }
 
 int main (int argc, const char** argv) {
-  BAS_FUNCTION(main);
-  BASstring Match;
-  BASarray<BASstring> Args;
-  BASarrayCopy(argc, argv, &Args);
+  COL_FUNCTION(main);
+  COLstring Match;
+  COLarray<COLstring> Args;
+  COLarrayCopy(argc, argv, &Args);
 
   bool Tracing = false;
-  if (BASargFlagPresent("ctrace", &Match, &Args)){ BAStrace(Match.data()); Tracing=true; }
-  if (BASargFindFlag   ("install", &Args))       { APPinstall(); return 0; }
+  if (COLargFlagPresent("ctrace", &Match, &Args)){ COLtrace(Match.data()); Tracing=true; }
+  if (COLargFindFlag   ("install", &Args))       { APPinstall(); return 0; }
   
   lua_State* L = lua_open();
-  if (BASargFlagPresent("ltrace", &Match, &Args)){ LUAtrace(L, Match.data()); Tracing = true; }
-  BAS_VAR(Tracing);
-  if (Tracing) { BASheader(); }
+  if (COLargFlagPresent("ltrace", &Match, &Args)){ LUAtrace(L, Match.data()); Tracing = true; }
+  COL_VAR(Tracing);
+  if (Tracing) { COLheader(); }
 
   APPrun(L, Args);
 

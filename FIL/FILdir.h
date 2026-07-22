@@ -12,17 +12,17 @@
 // Date:   Wednesday 01 July 2026 - 07:40PM
 // ---------------------------------------------------------------------------
 
-#include "BAS/BASbase.h"
+#include "COL/COLbase.h"
 
 #define FIL_DIR_SEPARATOR "/"
 
-BASstring FILdirCurrent();
+COLstring FILdirCurrent();
 
-bool FILpathSimplify(BASstring* pPath);
+bool FILpathSimplify(COLstring* pPath);
 
-class BASfile{
+class COLfile{
 public:
    bool IsDir;
 };
    
-bool FILdirList(const BASstring& Dir, BASdictSorted<BASstring, BASfile>* pList); 
+bool FILdirList(const COLstring& Dir, COLdictSorted<COLstring, COLfile>* pList); 

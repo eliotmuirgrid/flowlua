@@ -15,21 +15,21 @@
 
 #include <dirent.h>
 
-#include "BAS/BASarray.h"
-#include "BAS/BASdictSorted.h"
+#include "COL/COLarray.h"
+#include "COL/COLdictSorted.h"
 
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT;
+#include "COL/COLtrace.h"
+COL_TRACE_INIT;
 
-BASstring FILdirCurrent(){
-   BAS_FUNCTION(FILdirCurrent);
-   BASstring Result;
+COLstring FILdirCurrent(){
+   COL_FUNCTION(FILdirCurrent);
+   COLstring Result;
    char* pCwd = getcwd(NULL, 0);
    if (pCwd) {
       Result = pCwd;
       free(pCwd);
    }
-   BAS_VAR(Result);
+   COL_VAR(Result);
    return Result;
 }
 
@@ -42,19 +42,19 @@ static bool FILisThisAlpha(const char C){
 static bool FILcheckDirDepthLimit(int DirectoryDepth){
    // COL_FUNCTION(FILcheckDirDepthLimit);      
    if (DirectoryDepth >= MAX_NESTED_DEPTH){                     
-      BAS_TRC("Directory depth exceeds 256");
+      COL_TRC("Directory depth exceeds 256");
       return false;                      
    } else if (DirectoryDepth < 0){
-      BAS_TRC("Directory depth below 0");
+      COL_TRC("Directory depth below 0");
       return false;
    }                 
    return true;              
 }
 
-bool FILpathSimplify(BASstring* pPath) {
-   BAS_FUNCTION(FILpathSimplify);
-   BASstring& Path = *pPath;
-   BAS_VAR(Path);
+bool FILpathSimplify(COLstring* pPath) {
+   COL_FUNCTION(FILpathSimplify);
+   COLstring& Path = *pPath;
+   COL_VAR(Path);
    // This function will attempt to 'simplify' a path via the following methods:
    //   * Stripping out any './' which exist
    //   * Removing any '../' which are resolveable
@@ -70,7 +70,7 @@ bool FILpathSimplify(BASstring* pPath) {
    // This holds our output. It must be big enough for us to have the entire 
    // Path in it, and pre-allocating means we can pretty much treat it as
    // a big block of data.
-   BASstring Buffer;
+   COLstring Buffer;
    Buffer.setCapacity(Path.size() + 1);
 
    char* pOutputStart = Buffer.data();
@@ -102,7 +102,7 @@ bool FILpathSimplify(BASstring* pPath) {
    if (Path.size() >= 1 && 
        *pInput == '/')
    {
-      BAS_TRC("POSIX style absolute path.");
+      COL_TRC("POSIX style absolute path.");
       // POSIX-style absolute path
       Separator = '/';
       *pOutput++ = *pInput++;
@@ -110,7 +110,7 @@ bool FILpathSimplify(BASstring* pPath) {
    else if (Path.size() >= 2 &&
             ::memcmp(pInput, "\\\\", 2) == 0)
    {
-      BAS_TRC("Samba style absolute path.");
+      COL_TRC("Samba style absolute path.");
       // Samba-style absolute path
       Separator = '\\';
       ::memcpy(pOutput, pInput, 2);
@@ -123,7 +123,7 @@ bool FILpathSimplify(BASstring* pPath) {
             (pInput[2]=='/' || pInput[2]=='\\')
          )
    {
-      BAS_TRC("Windows style absolute path.");
+      COL_TRC("Windows style absolute path.");
       // Windows-style absolute path
       Separator = '\\';
       pOutput[0] = pInput[0];
@@ -135,7 +135,7 @@ bool FILpathSimplify(BASstring* pPath) {
    }
    else
    {
-      BAS_TRC("Relative path.");
+      COL_TRC("Relative path.");
       // Relative path of some sort, we use the current platform's default
       // separator.
    }
@@ -257,13 +257,13 @@ bool FILpathSimplify(BASstring* pPath) {
    }
 
    // Not NULL-terminated, use the special constructor.
-   BASstring SimplePath(pOutputStart, pOutput - pOutputStart);
-   BAS_VAR(SimplePath);
+   COLstring SimplePath(pOutputStart, pOutput - pOutputStart);
+   COL_VAR(SimplePath);
    Path = SimplePath; 
    return true;
 }
 
-bool FILdirList(const BASstring& Dir,BASdictSorted<BASstring, BASfile>* pList){
+bool FILdirList(const COLstring& Dir,COLdictSorted<COLstring, COLfile>* pList){
    DIR* dir = opendir(Dir.data());
 
    if (!dir) { return false; }
@@ -271,7 +271,7 @@ bool FILdirList(const BASstring& Dir,BASdictSorted<BASstring, BASfile>* pList){
    struct dirent* ent;
 
    while ((ent = readdir(dir)) != NULL) {
-      pList->add(ent->d_name, BASfile()); 
+      pList->add(ent->d_name, COLfile()); 
    }
    closedir(dir);
    return true;

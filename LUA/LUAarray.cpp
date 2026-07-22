@@ -1,19 +1,19 @@
 /*************************
  Copyright (C) Eliot Muir Forever
  
-  BASarray
+  COLarray
  
   Date: Wed  1 Jul 2026 06:17:53 EST
  **************************/
 
 #include "LUAlua.h"
 
-#include <BAS/BASarray.h>
-#include <BAS/BAStrace.h>
-BAS_TRACE_INIT
+#include <COL/COLarray.h>
+#include <COL/COLtrace.h>
+COL_TRACE_INIT
 
-void LUApushArray(lua_State* L, const BASarray<BASstring>& In){
-   BAS_FUNCTION(LUApushArray);
+void LUApushArray(lua_State* L, const COLarray<COLstring>& In){
+   COL_FUNCTION(LUApushArray);
    lua_newtable(L);
 
    for (int i = 0; i < In.size(); i++) {

@@ -1,9 +1,9 @@
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT
+#include "COL/COLtrace.h"
+COL_TRACE_INIT
 
 
-BASstring FILpathName(const BASstring& Path) {
-   BAS_FUNCTION(FILpathName);
+COLstring FILpathName(const COLstring& Path) {
+   COL_FUNCTION(FILpathName);
    const char* pBegin = Path.data();
    const char* pEnd = pBegin + Path.size();
    const char* pRead = pEnd;
@@ -15,7 +15,7 @@ BASstring FILpathName(const BASstring& Path) {
          case '\\':
          case '/':
             pRead++;
-            return BASstring(pRead, pEnd - pRead);
+            return COLstring(pRead, pEnd - pRead);
       }
    }
    return Path;

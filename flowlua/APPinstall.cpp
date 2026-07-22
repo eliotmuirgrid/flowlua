@@ -1,18 +1,18 @@
 
 #include "FIL/FILdir.h"
 
-#include "BAS/BASdictSorted.h"
-#include "BAS/BASstring.h"
-#include "BAS/BASstream.h"
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT;
+#include "COL/COLdictSorted.h"
+#include "COL/COLstring.h"
+#include "COL/COLstream.h"
+#include "COL/COLtrace.h"
+COL_TRACE_INIT;
 
 void APPinstall(){
-   BAS_FUNCTION(APPinstall);
-   BASdictSorted<BASstring, BASfile> List;
+   COL_FUNCTION(APPinstall);
+   COLdictSorted<COLstring, COLfile> List;
    FILdirList("code/commands", &List);
    for (auto i=List.begin(); i != List.end(); ++i){
-      BAS_TRC(i.key());
+      COL_TRC(i.key());
    }
 }
 

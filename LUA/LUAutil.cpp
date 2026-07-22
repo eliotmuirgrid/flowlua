@@ -9,11 +9,11 @@
 #include "LUA/LUAutil.h"
 #include "LUA/LUAlua.h"
 
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT;
+#include "COL/COLtrace.h"
+COL_TRACE_INIT;
 
 void LUAloadLib(lua_State* L){
-   BAS_FUNCTION(LUAloadLib);
+   COL_FUNCTION(LUAloadLib);
    luaopen_base(L);
    luaopen_table(L);
    luaopen_io(L);

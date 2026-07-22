@@ -1,4 +1,4 @@
 #pragma once
-class BASstring;
+class COLstring;
 
-BASstring FILpathName(const BASstring& Path);
+COLstring FILpathName(const COLstring& Path);

@@ -12,15 +12,15 @@
 
 #include <stdlib.h>
 
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT;
+#include "COL/COLtrace.h"
+COL_TRACE_INIT;
 
 void LUApathSet(lua_State* L){
-   BAS_FUNCTION(LUApathSet);
+   COL_FUNCTION(LUApathSet);
 
-   BASstring Dir = FILdirCurrent() + "/code/?.lua";
-   BAS_VAR(Dir);
+   COLstring Dir = FILdirCurrent() + "/code/?.lua";
+   COL_VAR(Dir);
    FILpathSimplify(&Dir);
-   BAS_VAR(Dir);
+   COL_VAR(Dir);
    setenv("LUA_PATH", Dir.data(), Dir.size());
 }

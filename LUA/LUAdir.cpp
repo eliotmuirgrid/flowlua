@@ -11,8 +11,8 @@
 
 #include <dirent.h>
 
-#include "BAS/BAStrace.h"
-BAS_TRACE_INIT;
+#include "COL/COLtrace.h"
+COL_TRACE_INIT;
 
 
 static int l_dir(lua_State *L) {
@@ -43,7 +43,7 @@ static int l_dir(lua_State *L) {
 }
 
 void LUAloadDir(lua_State* L){
-   BAS_FUNCTION(LUAloadDir);
+   COL_FUNCTION(LUAloadDir);
    lua_register(L, "dir", l_dir);
 }
 
