@@ -1,3 +1,5 @@
+TARGET=flowlua.com
+
 TOOL_DIR:=$(HOME)/cosmo/bin/
 
 # Wildcard matching to figure out where sources are based on the DIRS variable
@@ -5,7 +7,7 @@ OBJEXT  := .o
 LIBEXT  := a
 
 # Safely expand search paths
-DIRS    := $(wildcard ../*/)
+DIRS    := $(wildcard ./*/)
 SEARCH  := $(foreach dir, $(DIRS), $(dir)*.c $(dir)*.cpp) 
 SOURCES := $(wildcard $(SEARCH))
 
@@ -30,8 +32,8 @@ all: $(TARGET)
 CC     := $(TOOL_DIR)cosmocc
 CXX    := $(TOOL_DIR)cosmoc++
 
-PCFLAGS := -Wno-pointer-to-int-cast -MMD -MP -I../ 
-PCPPFLAGS := -MMD -MP -I../ 
+PCFLAGS := -Wno-pointer-to-int-cast -MMD -MP -I. 
+PCPPFLAGS := -MMD -MP -I. 
 
 $(TARGET): $(OBJECTS) 
 	$(CXX) $(OBJECTS) -o $@
