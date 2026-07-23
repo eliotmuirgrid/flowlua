@@ -99,6 +99,7 @@ static void f_luaopen (lua_State *L, void *ud) {
   g->strt.hash = NULL;
   setnilvalue(defaultmeta(L));
   setnilvalue(registry(L));
+  setnilvalue(stringmeta(L));
   luaZ_initbuffer(L, &g->buff);
   g->panic = default_panic;
   g->rootgc = NULL;

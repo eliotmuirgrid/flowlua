@@ -534,6 +534,10 @@ LUA_API int lua_getmetatable (lua_State *L, int objindex) {
       case LUA_TUSERDATA:
         mt = uvalue(obj)->uv.metatable;
         break;
+      case LUA_TSTRING:
+        if (ttistable(stringmeta(L)))
+        mt = hvalue(stringmeta(L));
+        break;
     }
   }
   if (mt == NULL || mt == hvalue(defaultmeta(L)))
@@ -597,34 +601,43 @@ LUA_API void lua_rawseti (lua_State *L, int idx, int n) {
   lua_unlock(L);
 }
 
+LUA_API int lua_setmetatable(lua_State *L, int objindex) {
+   TObject *obj;
+   TObject *mt;
+   int res = 1;
 
-LUA_API int lua_setmetatable (lua_State *L, int objindex) {
-  TObject *obj, *mt;
-  int res = 1;
-  lua_lock(L);
-  api_checknelems(L, 1);
-  obj = luaA_index(L, objindex);
-  mt = (!ttisnil(L->top - 1)) ? L->top - 1 : defaultmeta(L);
-  api_check(L, ttistable(mt));
-  switch (ttype(obj)) {
-    case LUA_TTABLE: {
-      hvalue(obj)->metatable = hvalue(mt);  /* write barrier */
-      break;
-    }
-    case LUA_TUSERDATA: {
-      uvalue(obj)->uv.metatable = hvalue(mt);  /* write barrier */
-      break;
-    }
-    default: {
-      res = 0;  /* cannot set */
-      break;
-    }
-  }
-  L->top--;
-  lua_unlock(L);
-  return res;
+   lua_lock(L);
+   api_checknelems(L, 1);
+
+   obj = luaA_index(L, objindex);
+   mt = L->top - 1;
+
+   api_check(L, ttisnil(mt) || ttistable(mt));
+
+   switch (ttype(obj)) {
+      case LUA_TTABLE:
+         hvalue(obj)->metatable =
+            ttisnil(mt) ? hvalue(defaultmeta(L)) : hvalue(mt);
+         break;
+      case LUA_TUSERDATA:
+         uvalue(obj)->uv.metatable =
+            ttisnil(mt) ? hvalue(defaultmeta(L)) : hvalue(mt);
+         break;
+      case LUA_TSTRING:
+         if (ttisnil(mt))
+            setnilvalue(stringmeta(L));
+         else
+            setobj(stringmeta(L), mt);
+         break;
+      default:
+         res = 0;
+         break;
+   }
+
+   L->top--;
+   lua_unlock(L);
+   return res;
 }
-
 
 LUA_API int lua_setfenv (lua_State *L, int idx) {
   StkId o;

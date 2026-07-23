@@ -44,6 +44,7 @@ struct lua_longjmp;  /* defined in ldo.c */
 
 /* default meta table (both for tables and udata) */
 #define defaultmeta(L)	(&G(L)->_defaultmeta)
+#define stringmeta(L)	(&G(L)->_stringmeta)
 
 /* table of globals */
 #define gt(L)	(&L->_gt)
@@ -119,6 +120,7 @@ typedef struct global_State {
   lua_CFunction panic;  /* to be called in unprotected errors */
   TObject _registry;
   TObject _defaultmeta;
+  TObject _stringmeta;
   struct lua_State *mainthread;
   Node dummynode[1];  /* common node array for all empty tables */
   TString *tmname[TM_N];  /* array with tag-method names */

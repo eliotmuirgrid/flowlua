@@ -1,5 +1,6 @@
 require "CODE/CODErenamePrefix"
 
 function main(Arg)
-   CODErenamePrefix(Arg[2], Arg[3]);
+   local Life = "Life"
+   print (Life:sub(2));
 end

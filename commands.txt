@@ -1,0 +1,2 @@
+music:play=MUSICplay
+prefix:move=CODErenamePrefix

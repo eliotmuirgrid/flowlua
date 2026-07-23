@@ -41,7 +41,6 @@ void LUAdebugHook(lua_State* L, lua_Debug* ar){
 }
 
 void LUAtrace(lua_State* L, const COLstring& Match){
-   COL_FUNCTION(LUAtrace);
    s_LUAmatch = Match;
    lua_sethook(L, LUAdebugHook, LUA_MASKCALL | LUA_MASKRET, 0);
 }

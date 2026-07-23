@@ -6,7 +6,7 @@
 
 #include "LUA/LUAarray.h"
 #include "LUA/LUApathSet.h"
-#include "LUA/LUAutil.h"
+#include "LUA/LUAloadLib.h"
 #include "LUA/LUAtrace.h"
 #include "LUA/LUAdir.h"
 

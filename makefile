@@ -13,8 +13,8 @@ SOURCES := $(wildcard $(SEARCH))
 
 # Convert:
 #   COL/COLstring.cpp     -> build/COL/example.o
-OBJECTS := $(patsubst %.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(SOURCES)))
-OBJECTS += $(patsubst %.c,$(BUILD_DIR)/%.o,$(filter %.c,$(SOURCES)))
+OBJECTS := $(patsubst ./%.cpp,$(BUILD_DIR)/%.o,$(filter %.cpp,$(SOURCES)))
+OBJECTS += $(patsubst ./%.c,$(BUILD_DIR)/%.o,$(filter %.c,$(SOURCES)))
 
 # Add any explicitly supplied object files.
 OBJECTS += $(OBJECTS_EXTRA)
@@ -46,6 +46,7 @@ depends:
 
 show:
 	@echo "Making: $(TARGET)"
+	@echo DIRS    = $(DIRS)
 	@echo CC      = $(CC)
 	@echo SEARCH  = $(SEARCH)
 	@echo SOURCES = $(SOURCES)

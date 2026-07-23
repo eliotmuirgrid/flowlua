@@ -455,6 +455,7 @@ static void markroot (GCState *st, lua_State *L) {
   global_State *g = st->g;
   markobject(st, defaultmeta(L));
   markobject(st, registry(L));
+  markobject(st, stringmeta(L));
   traversestack(st, g->mainthread);
   if (L != g->mainthread)  /* another thread is running? */
     markvalue(st, L);  /* cannot collect it */
