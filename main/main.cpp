@@ -23,7 +23,7 @@ void APPrun(lua_State* L, const COLarray<COLstring>& Args){
    LUAloadLib(L);
    LUAloadDir(L);
    LUApathSet(L);
-   if (luaL_loadfile(L, "main.lua") || lua_pcall(L, 0, 0, 0)) {
+   if (luaL_loadfile(L, "main/main.lua") || lua_pcall(L, 0, 0, 0)) {
       fprintf(stderr, "%s\n", lua_tostring(L, -1));
       lua_close(L);
       return;

@@ -7,6 +7,7 @@
  ***************************************/
 
 #include "LUA/LUAstringRegister.h"
+#include "LUA/LUAstringSplit.h"
 #include "LUA/LUAlua.h"
 
 #include "COL/COLtrace.h"

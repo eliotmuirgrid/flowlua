@@ -18,7 +18,8 @@
 #include "lauxlib.h"
 #include "lualib.h"
 
-
+#include <COL/COLtrace.h>
+COL_TRACE_INIT
 
 
 /*
@@ -456,6 +457,7 @@ static void pushcomposename (lua_State *L) {
 
 
 static int luaB_require (lua_State *L) {
+  COL_FUNCTION(luaB_require);
   const char *path;
   int status = LUA_ERRFILE;  /* not found (yet) */
   luaL_checkstring(L, 1);
