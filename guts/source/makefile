@@ -1,5 +1,6 @@
-TARGET    := flow.com
-BUILD_DIR := build
+TARGET_DIR:= ../../
+TARGET    := $(TARGET_DIR)flow.com
+BUILD_DIR := ../build
 
 TOOL_DIR := $(HOME)/cosmo/bin/
 
@@ -54,7 +55,7 @@ show:
 	@echo DEPENDS = $(DEPENDS)
 
 clean::
-	$(RM) -r $(BUILD_DIR) *.elf *.dbg
+	$(RM) -r $(BUILD_DIR) $(TARGET_DIR)*.elf $(TARGET_DIR)*.dbg
 
 -include $(DEPENDS)
 

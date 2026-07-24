@@ -1,6 +1,7 @@
 require "FILE/FILEwrite"
 require "DATE/DATEhumanPretty"
 require "DATE/DATEcomputerPretty"
+require "TEMPLATE/TEMPLATEfill"
 
 
 local Header=[[
@@ -43,18 +44,6 @@ void @@NAME@@(lua_State* L){
 }
 ]]
 
-local Body=[[
-//----------------------------------------------------------------
-// Copyright (C) Eliot Muir @@YEAR@@ All rights reserved.
-//
-// Implementation
-//
-// Date: Thurday 23rd 2026
-//       NNNNNN seconds since the beginning of the Unix Epoch time
-//       The dawn of our new age. 
-//---------------------------------------------------------------- 
-]]
-
 function FUNCluaCppExtension(FunctionName, FunctionBody)
    local Tokens={
       NAME       =FunctionName,
@@ -64,6 +53,8 @@ function FUNCluaCppExtension(FunctionName, FunctionBody)
       EXPLANATION="To be documented by an AI agent later!"
    }
    COL_VAR(Tokens);
-   --local HeaderContent = TEMPLATEfill(Header, Tokens);
-   --local BodyContent   = TEMPLATEfill(Body,   Tokens);
+   local HContent = TEMPLATEfill(Header,Tokens);
+   COL_VAR(HContent);
+   local BContent = TEMPLATEfill(Body,Tokens);
+   COL_VAR(BContent);
 end
