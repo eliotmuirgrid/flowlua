@@ -1,4 +1,13 @@
-# Flowlua
+# Flow
+
+(formerly called FlowLua)
+
+Just download the binary [flow.com][https://github.com/eliotmuirgrid/flow/blob/master/flow.com] from here.
+
+Okay so it won't really work but until it does something useful like enable people to clean up their email spam no one will do this
+anyway :-)
+
+## For boring technical folk who like working - here you go.
 
 These instructions are setting up a project called [flowlua](https://interfaceware.com/aazip/cosmopolitan/flowlua), which is built using the **Cosmopolitan Libc** toolchain.
 
