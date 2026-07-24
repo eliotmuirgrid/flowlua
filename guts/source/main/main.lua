@@ -10,7 +10,6 @@ local Commands={
 }
 
 function main(Arg)
-   COL_VAR(Arg)
    if not Commands[Arg[2]] then
       print "Please use a supported command:"
       for K, _ in pairs(Commands) do

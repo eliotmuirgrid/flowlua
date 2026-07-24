@@ -25,6 +25,7 @@ void APPrun(lua_State* L, const COLarray<COLstring>& Args){
    LUAloadDir(L);
    LUApathSet(L, Args[0]);
    COLstring FileName =FILdirExe(Args[0])+"guts/source/main/main.lua";
+   FileName ="/zip/guts/source/main/main.lua";
    if (luaL_loadfile(L, FileName.data()) || lua_pcall(L, 0, 0, 0)) {
       fprintf(stderr, "%s\n", lua_tostring(L, -1));
       lua_close(L);

@@ -21,5 +21,9 @@ void LUApathSet(lua_State* L, const COLstring& Exe){
 
    COLstring Dir = FILdirExe(Exe) + "guts/source/?.lua";
    COL_VAR(Dir);
+   COL_HEX("Dir:", Dir.data(), Dir.size());
+   Dir          += ";/zip/guts/source/?.lua";
+   COL_VAR(Dir);
+   COL_HEX("Dir:", Dir.data(), Dir.size());
    setenv("LUA_PATH", Dir.data(), Dir.size());
 }
