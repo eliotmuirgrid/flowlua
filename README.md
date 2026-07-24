@@ -1,4 +1,13 @@
-# Flowlua
+# Flow
+
+(formerly called FlowLua)
+
+Just download the binary [flow.com][https://github.com/eliotmuirgrid/flow/blob/master/flow.com] from here.
+
+Okay so it won't really work but until it does something useful like enable people to clean up their email spam no one will do this
+anyway :-)
+
+## For boring technical folk who like working - here you go.
 
 These instructions are setting up a project called [flowlua](https://interfaceware.com/aazip/cosmopolitan/flowlua), which is built using the **Cosmopolitan Libc** toolchain.
 
@@ -35,11 +44,9 @@ make -j16
 ```bash
 ./flow.com
 ```
-It should say something friendly like Hello. 
+It should do something interesting.  Well interesting to me because I'm strange haha.  I'm working on it every day so it's changing a lot.
 
-```
-Hello
-```
+Enjoy!
+Eliot Muir
 
-Congratulations - one small step to a world when people
-can be safe and control their own data.
+Putting the **mad** back into mad programmer - hee hee.
