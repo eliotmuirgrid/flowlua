@@ -35,11 +35,4 @@ make -j16
 ```bash
 ./flow.com
 ```
-It should say something friendly like Hello. 
-
-```
-Hello
-```
-
-Congratulations - one small step to a world when people
-can be safe and control their own data.
+It should do something interesting.  I'm working on it every day so it's changing a lot.
