@@ -1,5 +1,7 @@
 TARGET_DIR:= ../../
-TARGET    := $(TARGET_DIR)flow.com
+TARGET_NAME:=flow.com
+TARGET    := $(TARGET_DIR)$(TARGET_NAME)
+TARGET_SOURCE:=guts/source/
 BUILD_DIR := ../build
 
 TOOL_DIR := $(HOME)/cosmo/bin/
@@ -34,6 +36,7 @@ $(TARGET): $(OBJECTS)
 	@mkdir -p $(dir $@)
 	$(CXX) $(OBJECTS) -o $@
 	rm $(TARGET_DIR)*.elf $(TARGET_DIR)*.dbg
+	cd $(TARGET_DIR) && zip -r $(TARGET_NAME) $(TARGET_SOURCE)
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
