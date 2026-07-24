@@ -44,4 +44,9 @@ make -j16
 ```bash
 ./flow.com
 ```
-It should do something interesting.  I'm working on it every day so it's changing a lot.
+It should do something interesting.  Well interesting to me because I'm strange haha.  I'm working on it every day so it's changing a lot.
+
+Enjoy!
+Eliot Muir
+
+Putting the **mad** back into mad programmer - hee hee.
