@@ -33,6 +33,7 @@ all: $(TARGET)
 $(TARGET): $(OBJECTS)
 	@mkdir -p $(dir $@)
 	$(CXX) $(OBJECTS) -o $@
+	rm $(TARGET_DIR)*.elf $(TARGET_DIR)*.dbg
 
 $(BUILD_DIR)/%.o: %.c
 	@mkdir -p $(dir $@)
@@ -55,7 +56,7 @@ show:
 	@echo DEPENDS = $(DEPENDS)
 
 clean::
-	$(RM) -r $(BUILD_DIR) $(TARGET_DIR)*.elf $(TARGET_DIR)*.dbg
+	$(RM) -r $(BUILD_DIR) 
 
 -include $(DEPENDS)
 

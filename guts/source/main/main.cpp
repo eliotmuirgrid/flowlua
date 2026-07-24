@@ -9,6 +9,7 @@
 #include "LUA/LUAloadLib.h"
 #include "LUA/LUAtrace.h"
 #include "LUA/LUAdir.h"
+#include "FIL/FILdirExe.h"
 
 #include "COL/COLargFlagPresent.h"
 #include "COL/COLstring.h"
@@ -22,8 +23,9 @@ void APPrun(lua_State* L, const COLarray<COLstring>& Args){
    COL_FUNCTION(APPrun);
    LUAloadLib(L);
    LUAloadDir(L);
-   LUApathSet(L);
-   if (luaL_loadfile(L, "main/main.lua") || lua_pcall(L, 0, 0, 0)) {
+   LUApathSet(L, Args[0]);
+   COLstring FileName =FILdirExe(Args[0])+"guts/source/main/main.lua";
+   if (luaL_loadfile(L, FileName.data()) || lua_pcall(L, 0, 0, 0)) {
       fprintf(stderr, "%s\n", lua_tostring(L, -1));
       lua_close(L);
       return;

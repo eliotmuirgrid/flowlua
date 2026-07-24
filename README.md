@@ -4,49 +4,13 @@
 
 Just download the binary [flow.com][https://github.com/eliotmuirgrid/flow/blob/master/flow.com] from here.
 
-Okay so it won't really work but until it does something useful like enable people to clean up their email spam no one will do this
-anyway :-)
+Okay so it won't really work but until it does something useful like enable people to clean up their email spam no one will do this anyway :-)
 
-## For boring technical folk who like working - here you go.
+If you are boring like Eliot you can dig down into the repository to see boring stuff like code
+and things.  I know most people aren't that interested!
 
-These instructions are setting up a project called [flowlua](https://interfaceware.com/aazip/cosmopolitan/flowlua), which is built using the **Cosmopolitan Libc** toolchain.
+But everyone is drowning in SPAM and I think that will be when ordinary people say - hey Eliot you actually
+did something useful!
 
-### Create a directory for Cosmopolitan and download it
-
-```bash
-cd $HOME
-mkdir cosmo
-curl -L -O https://cosmo.zip/pub/cosmocc/cosmocc.zip
-```
-
-### Extract it quietly into the cosmo directory and remove zip afterwards
-
-```bash
-unzip -q cosmocc.zip -d cosmo
-rm cosmocc.zip
-```
-
-### Clone the Flow source into ~/flow and enter the source directory
-
-```bash
-git clone https://github.com/eliotmuirgrid/flow
-cd flow
-```
-
-###  Build the program with make -j16 for faster parallel build.
-
-```bash
-make -j16
-```
-
-### Run it 
-
-```bash
-./flow.com
-```
-It should do something interesting.  Well interesting to me because I'm strange haha.  I'm working on it every day so it's changing a lot.
-
-Enjoy!
-Eliot Muir
-
-Putting the **mad** back into mad programmer - hee hee.
+If this works for me I will actually be motivated to tell my friends about this.  This will probably
+be a bigger hit than talking about that boring interoperability and integration crap....

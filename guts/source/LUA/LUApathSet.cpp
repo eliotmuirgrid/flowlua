@@ -9,18 +9,17 @@
 #include "LUApathSet.h"
 
 #include "FIL/FILdir.h"
+#include "FIL/FILdirExe.h"
 
 #include <stdlib.h>
 
 #include "COL/COLtrace.h"
 COL_TRACE_INIT;
 
-void LUApathSet(lua_State* L){
+void LUApathSet(lua_State* L, const COLstring& Exe){
    COL_FUNCTION(LUApathSet);
 
-   COLstring Dir = FILdirCurrent() + "./?.lua";
-   COL_VAR(Dir);
-   FILpathSimplify(&Dir);
+   COLstring Dir = FILdirExe(Exe) + "guts/source/?.lua";
    COL_VAR(Dir);
    setenv("LUA_PATH", Dir.data(), Dir.size());
 }
